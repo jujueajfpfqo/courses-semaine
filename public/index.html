@@ -12,7 +12,7 @@
   --bg:#ECEFE4; --surface:#FFFFFF; --surface-2:#F5F7F0; --ink:#221F20; --muted:#6A6862;
   --line:#D6DACB; --plum:#4A2545; --plum-soft:#EDE3EA; --on-plum:#FFFFFF;
   --citron:#E8D24E; --on-citron:#2A2410; --ticket:#FFFEF7; --ticket-ink:#2B2725; --ticket-line:#CFCBBE;
-  --good:#2F7A4B; --danger:#A3352B; --shadow:0 1px 0 rgba(34,31,32,.06), 0 8px 24px -12px rgba(74,37,69,.25); --thermo-bg:#EBF5E8; --thermo-border:#6AAF57;
+  --good:#2F7A4B; --danger:#A3352B; --shadow:0 1px 0 rgba(34,31,32,.06), 0 8px 24px -12px rgba(74,37,69,.25); --thermo-bg:#EBF5E8; --thermo-border:#6AAF57; --q-hl:var(--citron); --q-hl-ink:var(--on-citron);
   --k0:#6E9A4E; --k1:#B8473A; --k2:#E8D24E; --k3:#C58B3A; --k4:#4A2545; --k5:#4E87B5; --k6:#3E8E87; --k7:#B57AA3; --k8:#8A8F93;
   color-scheme:light;
 }
@@ -23,7 +23,7 @@
     --ticket:#2A2628; --ticket-ink:#EEE9E2; --ticket-line:#4A4447;
     --good:#7FCB98; --danger:#F08A7E; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
     --k0:#8DBB6B; --k1:#E07A6B; --k2:#E8D24E; --k3:#D9A75A; --k4:#D9AED1; --k5:#7FB0DA; --k6:#6CC0B7; --k7:#D59CC4; --k8:#A7ACB0;
-    --thermo-bg:#1A2F18; --thermo-border:#5A9E48;
+    --thermo-bg:#1A2F18; --thermo-border:#5A9E48; --q-hl:#E8619D; --q-hl-ink:#fff;
     color-scheme:dark;
   }
 }
@@ -33,7 +33,7 @@
   --ticket:#2A2628; --ticket-ink:#EEE9E2; --ticket-line:#4A4447;
   --good:#7FCB98; --danger:#F08A7E; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
   --k0:#8DBB6B; --k1:#E07A6B; --k2:#E8D24E; --k3:#D9A75A; --k4:#D9AED1; --k5:#7FB0DA; --k6:#6CC0B7; --k7:#D59CC4; --k8:#A7ACB0;
-  --thermo-bg:#1A2F18; --thermo-border:#5A9E48;
+  --thermo-bg:#1A2F18; --thermo-border:#5A9E48; --q-hl:#E8619D; --q-hl-ink:#fff;
   color-scheme:dark;
 }
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -51,7 +51,7 @@ button{cursor:pointer}
 /* Header */
 .top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
 .title h1{font-size:clamp(3.5rem,9vw,4.5rem);line-height:.95;letter-spacing:-.035em;font-weight:800;margin:0;font-variation-settings:"opsz" 96;max-width:14ch}
-.title h1 .q{display:inline-block;background:var(--citron);color:var(--on-citron);padding:0 .14em;border-radius:.16em;transform:rotate(-2deg)}
+.title h1 .q{display:inline-block;background:var(--q-hl);color:var(--q-hl-ink);padding:0 .14em;border-radius:.16em;transform:rotate(-2deg)}
 .title p{margin:10px 0 0;color:var(--muted);font-size:1.05rem}
 .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 14px;font-weight:500}
@@ -287,7 +287,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
 .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200;padding:24px}
 .login-card{background:var(--surface);border-radius:24px;padding:clamp(24px,5vw,40px);max-width:460px;width:100%;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:20px}
 .login-card h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1;letter-spacing:-.035em;font-weight:800;margin:0;font-variation-settings:"opsz" 96}
-.login-card h1 .q{display:inline-block;background:var(--citron);color:var(--on-citron);padding:0 .14em;border-radius:.16em;transform:rotate(-2deg)}
+.login-card h1 .q{display:inline-block;background:var(--q-hl);color:var(--q-hl-ink);padding:0 .14em;border-radius:.16em;transform:rotate(-2deg)}
 .login-card p{margin:0;color:var(--muted)}
 .login-card .hint{font-size:.9rem;padding-top:4px}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block;margin-right:4px}
