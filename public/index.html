@@ -12,7 +12,7 @@
   --bg:#ECEFE4; --surface:#FFFFFF; --surface-2:#F5F7F0; --ink:#221F20; --muted:#6A6862;
   --line:#D6DACB; --plum:#4A2545; --plum-soft:#EDE3EA; --on-plum:#FFFFFF;
   --citron:#E8D24E; --on-citron:#2A2410; --ticket:#FFFEF7; --ticket-ink:#2B2725; --ticket-line:#CFCBBE;
-  --good:#2F7A4B; --danger:#A3352B; --shadow:0 1px 0 rgba(34,31,32,.06), 0 8px 24px -12px rgba(74,37,69,.25);
+  --good:#2F7A4B; --danger:#A3352B; --shadow:0 1px 0 rgba(34,31,32,.06), 0 8px 24px -12px rgba(74,37,69,.25); --thermo-bg:#FFF0E4; --thermo-border:#E8A07A;
   --k0:#6E9A4E; --k1:#B8473A; --k2:#E8D24E; --k3:#C58B3A; --k4:#4A2545; --k5:#4E87B5; --k6:#3E8E87; --k7:#B57AA3; --k8:#8A8F93;
   color-scheme:light;
 }
@@ -23,6 +23,7 @@
     --ticket:#2A2628; --ticket-ink:#EEE9E2; --ticket-line:#4A4447;
     --good:#7FCB98; --danger:#F08A7E; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
     --k0:#8DBB6B; --k1:#E07A6B; --k2:#E8D24E; --k3:#D9A75A; --k4:#D9AED1; --k5:#7FB0DA; --k6:#6CC0B7; --k7:#D59CC4; --k8:#A7ACB0;
+    --thermo-bg:#3D2214; --thermo-border:#C4683A;
     color-scheme:dark;
   }
 }
@@ -32,6 +33,7 @@
   --ticket:#2A2628; --ticket-ink:#EEE9E2; --ticket-line:#4A4447;
   --good:#7FCB98; --danger:#F08A7E; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
   --k0:#8DBB6B; --k1:#E07A6B; --k2:#E8D24E; --k3:#D9A75A; --k4:#D9AED1; --k5:#7FB0DA; --k6:#6CC0B7; --k7:#D59CC4; --k8:#A7ACB0;
+  --thermo-bg:#3D2214; --thermo-border:#C4683A;
   color-scheme:dark;
 }
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -94,6 +96,7 @@ button.slot{color:var(--muted);align-items:center;justify-content:center;font-we
 button.slot:hover{border-color:var(--plum);color:var(--plum);background:var(--surface)}
 button.slot .plus{display:block;font-size:1.5rem;line-height:1;font-weight:400}
 .slot.filled{border:0;background:var(--surface);box-shadow:var(--shadow);justify-content:space-between;gap:8px;position:relative}
+.slot.filled.thermo{background:var(--thermo-bg);border:1.5px solid var(--thermo-border)}
 .slot.filled .name{font-weight:650;font-size:.98rem;line-height:1.2;border:0;background:none;padding:0;text-align:left;overflow-wrap:anywhere}
 .slot.filled .name:hover{color:var(--plum)}
 .slot .meta{display:flex;align-items:center;justify-content:space-between;gap:4px}
@@ -112,6 +115,7 @@ button.slot .plus{display:block;font-size:1.5rem;line-height:1;font-weight:400}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .recipes{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 .rcard{background:var(--surface);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;position:relative}
+.rcard.thermo{background:var(--thermo-bg);border:1.5px solid var(--thermo-border)}
 .rcard h3{margin:0;font-size:1.15rem;line-height:1.2;letter-spacing:-.01em;padding-right:40px}
 .rcard .sub{color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:4px 12px}
 .rcard .sub a{color:var(--plum);text-decoration:underline;text-underline-offset:2px}
@@ -827,7 +831,8 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     if (!r) return `<button class="slot" type="button" data-slot="${key}" aria-label="Choisir une recette pour ${label}"><span class="plus">+</span></button>`;
     const n = p.portions || state.people;
     const cost = c.bySlot[key];
-    return `<div class="slot filled">
+    const thermo = /thermomix/i.test(r.title);
+    return `<div class="slot filled${thermo ? " thermo" : ""}">
       <button class="name" type="button" data-slot="${key}" aria-label="Changer la recette de ${label}">${r.fav ? "★ " : ""}${esc(r.title)}</button>
       ${cost ? `<span class="cost">≈ ${eur(cost)}</span>` : ""}
       <button class="rm" type="button" data-clear="${key}" aria-label="Retirer le repas de ${label}">×</button>
@@ -849,8 +854,9 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     let h = "";
     for (const r of list) {
       const s = stats[r.id];
+      const isThermo = /thermomix/i.test(r.title);
       let host = ""; try { if (r.url) host = new URL(r.url).hostname.replace(/^www\./, ""); } catch(e) {}
-      h += `<article class="rcard">
+      h += `<article class="rcard${isThermo ? " thermo" : ""}">
         <button class="star" type="button" data-fav="${r.id}" aria-pressed="${!!r.fav}" aria-label="${r.fav ? "Retirer des favoris" : "Mettre en favori"}">${STAR}</button>
         <h3 id="rtitle-${r.id}">${esc(r.title)}<button class="edit-title" type="button" data-rename="${r.id}" aria-label="Renommer la recette" title="Renommer">✎</button></h3>
         <div class="sub"><span>Pour ${r.servings} pers.</span><span>${r.ingredients.length} ingrédients</span>${host ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(host)}</a>` : ""}</div>
