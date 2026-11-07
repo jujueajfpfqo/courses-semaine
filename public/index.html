@@ -101,8 +101,9 @@ button.slot .plus{display:block;font-size:1.5rem;line-height:1;font-weight:400}
 .slot .mini button{width:22px;height:22px;border:0;border-radius:50%;background:transparent;font-weight:700;line-height:1}
 .slot .mini button:hover{background:var(--plum-soft)}
 .slot .mini span{font-size:.8rem;font-weight:600;min-width:34px;text-align:center}
-.slot .rm{width:26px;height:26px;border-radius:50%;border:0;background:transparent;color:var(--muted);font-size:1.1rem;line-height:1}
-.slot .rm:hover{background:var(--surface-2);color:var(--danger)}
+.slot .rm{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;border:0;background:var(--surface-2);color:var(--muted);font-size:1rem;line-height:1;display:grid;place-items:center;opacity:0;transition:opacity .15s}
+.slot.filled:hover .rm{opacity:1}
+.slot .rm:hover{background:var(--danger);color:#fff;opacity:1}
 .slot .cost{font-size:.78rem;color:var(--muted);font-weight:600}
 
 /* Recipes */
@@ -763,9 +764,9 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     return `<div class="slot filled">
       <button class="name" type="button" data-slot="${key}" aria-label="Changer la recette de ${label}">${r.fav ? "★ " : ""}${esc(r.title)}</button>
       ${cost ? `<span class="cost">≈ ${eur(cost)}</span>` : ""}
+      <button class="rm" type="button" data-clear="${key}" aria-label="Retirer le repas de ${label}">×</button>
       <div class="meta">
         <span class="mini"><button type="button" data-por="${key}" data-d="-1" aria-label="Une portion de moins">−</button><span>${n} pers.</span><button type="button" data-por="${key}" data-d="1" aria-label="Une portion de plus">+</button></span>
-        <button class="rm" type="button" data-clear="${key}" aria-label="Retirer le repas de ${label}">×</button>
       </div></div>`;
   }
 
