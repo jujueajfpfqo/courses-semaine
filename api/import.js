@@ -90,6 +90,14 @@ function servingsFromText(text) {
   return isNaN(n) || n < 1 ? 4 : n;
 }
 
+function cleanTitle(raw) {
+  if (!raw) return "Recette sans nom";
+  // Garder uniquement ce qui précède le premier séparateur de type " : ", " | ", " - ", " – "
+  const t = String(raw).trim();
+  const sep = t.search(/\s+[:\|\-–]\s+/);
+  return (sep > 0 ? t.slice(0, sep) : t).trim().slice(0, 80) || "Recette sans nom";
+}
+
 // ── Firecrawl ────────────────────────────────────────────────────────────────
 
 async function firecrawlScrape(url) {
@@ -177,7 +185,7 @@ module.exports = async function handler(req, res) {
       const html = await pageRes.text();
       const recipe = extractJsonLd(html);
       if (recipe) {
-        title = recipe.name || title;
+        title = cleanTitle(recipe.name) || title;
         servings = servingsFromText(recipe.recipeYield);
         rawIngredients = (recipe.recipeIngredient || []).map(String).filter(Boolean);
       }
@@ -196,7 +204,7 @@ module.exports = async function handler(req, res) {
     try {
       const json = await firecrawlScrape(url);
       if (json && Array.isArray(json.ingredients) && json.ingredients.length) {
-        title = json.title || title;
+        title = cleanTitle(json.title) || title;
         servings = json.servings || servings;
         rawIngredients = json.ingredients.map(String).filter(Boolean);
         await incrementFcQuota();

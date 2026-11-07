@@ -1027,7 +1027,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
 
       const recipe = {
         id: uid(),
-        title: String(data.title || "Recette sans nom").trim().slice(0, 80),
+        title: (() => { const t = String(data.title || "").trim(); const sep = t.search(/\s+[:\|\-–]\s+/); return ((sep > 0 ? t.slice(0, sep) : t).trim().slice(0, 80)) || "Recette sans nom"; })(),
         servings: Math.max(1, Math.round(Number(data.servings) || 4)),
         url: validUrl ? url : "",
         ingredients: data.ingredients || [],
