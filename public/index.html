@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Les repas de la semaine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ECEFE4; --surface:#FFFFFF; --surface-2:#F5F7F0; --ink:#221F20; --muted:#6A6862;
+  --line:#D6DACB; --plum:#4A2545; --plum-soft:#EDE3EA; --on-plum:#FFFFFF;
+  --citron:#E8D24E; --on-citron:#2A2410; --ticket:#FFFEF7; --ticket-ink:#2B2725; --ticket-line:#CFCBBE;
+  --good:#2F7A4B; --danger:#A3352B; --shadow:0 1px 0 rgba(34,31,32,.06), 0 8px 24px -12px rgba(74,37,69,.25);
+  --k0:#6E9A4E; --k1:#B8473A; --k2:#E8D24E; --k3:#C58B3A; --k4:#4A2545; --k5:#4E87B5; --k6:#3E8E87; --k7:#B57AA3; --k8:#8A8F93;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191618; --surface:#242023; --surface-2:#2C282B; --ink:#F1EDE8; --muted:#A9A39F;
+    --line:#3B3539; --plum:#D9AED1; --plum-soft:#3A2B37; --on-plum:#241621;
+    --ticket:#2A2628; --ticket-ink:#EEE9E2; --ticket-line:#4A4447;
+    --good:#7FCB98; --danger:#F08A7E; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
+    --k0:#8DBB6B; --k1:#E07A6B; --k2:#E8D24E; --k3:#D9A75A; --k4:#D9AED1; --k5:#7FB0DA; --k6:#6CC0B7; --k7:#D59CC4; --k8:#A7ACB0;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191618; --surface:#242023; --surface-2:#2C282B; --ink:#F1EDE8; --muted:#A9A39F;
+  --line:#3B3539; --plum:#D9AED1; --plum-soft:#3A2B37; --on-plum:#241621;
+  --ticket:#2A2628; --ticket-ink:#EEE9E2; --ticket-line:#4A4447;
+  --good:#7FCB98; --danger:#F08A7E; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
+  --k0:#8DBB6B; --k1:#E07A6B; --k2:#E8D24E; --k3:#D9A75A; --k4:#D9AED1; --k5:#7FB0DA; --k6:#6CC0B7; --k7:#D59CC4; --k8:#A7ACB0;
+  color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--citron);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+
+.wrap{max-width:1320px;margin:0 auto;padding:clamp(16px,3vw,32px)}
+
+/* Header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.title h1{font-size:clamp(2.2rem,5.5vw,4rem);line-height:.95;letter-spacing:-.035em;font-weight:800;margin:0;font-variation-settings:"opsz" 96;max-width:14ch}
+.title h1 .q{display:inline-block;background:var(--citron);color:var(--on-citron);padding:0 .14em;border-radius:.16em;transform:rotate(-2deg)}
+.title p{margin:10px 0 0;color:var(--muted);font-size:1.05rem}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 14px;font-weight:500}
+.step{display:inline-flex;align-items:center;gap:2px}
+.step button{width:30px;height:30px;border-radius:50%;border:0;background:var(--surface-2);font-weight:700;font-size:1.05rem;line-height:1}
+.step button:hover{background:var(--plum-soft)}
+.step output{min-width:22px;text-align:center;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:10px 18px;border:1px solid transparent;font-weight:600;background:var(--plum);color:var(--on-plum);transition:transform .12s ease;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--surface)}
+.btn.small{padding:7px 14px;font-size:.92rem}
+.btn[disabled]{opacity:.55;cursor:progress}
+
+/* Tabs */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);padding:8px 0 14px;margin:-8px 0 14px}
+.tabs .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px}
+.tabs button{border:0;background:transparent;border-radius:999px;padding:9px 18px;font-weight:600;color:var(--muted);white-space:nowrap}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--plum);color:var(--on-plum)}
+.tabs .count{font-size:.8rem;opacity:.8}
+@media (min-width:980px){ .tabs [data-tab="courses"]{display:none} }
+
+/* Layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:28px;align-items:start}
+.layout.full{grid-template-columns:minmax(0,1fr)}
+.main{display:flex;flex-direction:column;gap:36px;min-width:0}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.section-head h2{margin:0;font-size:1.55rem;letter-spacing:-.02em;font-weight:700}
+.section-head .hint{color:var(--muted);font-size:.95rem}
+
+/* Planning */
+.week{display:grid;grid-template-columns:72px repeat(7,minmax(0,1fr));gap:8px}
+.dayhead{padding:4px 2px 6px;border-bottom:2px solid var(--ink)}
+.dayhead b{display:block;font-size:1rem;font-weight:700}
+.dayhead span{color:var(--muted);font-size:.85rem}
+.dayhead.today b{color:var(--plum)}
+.dayhead.today{border-color:var(--plum)}
+.mealhead{display:flex;align-items:flex-start;padding-top:12px;color:var(--muted);font-weight:600;font-size:.95rem}
+.slot{min-height:112px;border-radius:14px;border:1.5px dashed var(--line);background:transparent;display:flex;flex-direction:column;align-items:stretch;justify-content:center;padding:10px;text-align:left;transition:border-color .15s,background .15s;width:100%}
+button.slot{color:var(--muted);align-items:center;justify-content:center;font-weight:600;font-size:.95rem}
+button.slot:hover{border-color:var(--plum);color:var(--plum);background:var(--surface)}
+button.slot .plus{display:block;font-size:1.5rem;line-height:1;font-weight:400}
+.slot.filled{border:0;background:var(--surface);box-shadow:var(--shadow);justify-content:space-between;gap:8px;position:relative}
+.slot.filled .name{font-weight:650;font-size:.98rem;line-height:1.2;border:0;background:none;padding:0;text-align:left;overflow-wrap:anywhere}
+.slot.filled .name:hover{color:var(--plum)}
+.slot .meta{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.slot .mini{display:inline-flex;align-items:center;gap:2px;background:var(--surface-2);border-radius:999px;padding:2px}
+.slot .mini button{width:22px;height:22px;border:0;border-radius:50%;background:transparent;font-weight:700;line-height:1}
+.slot .mini button:hover{background:var(--plum-soft)}
+.slot .mini span{font-size:.8rem;font-weight:600;min-width:34px;text-align:center}
+.slot .rm{width:26px;height:26px;border-radius:50%;border:0;background:transparent;color:var(--muted);font-size:1.1rem;line-height:1}
+.slot .rm:hover{background:var(--surface-2);color:var(--danger)}
+.slot .cost{font-size:.78rem;color:var(--muted);font-weight:600}
+
+/* Recipes */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:600;font-size:.92rem;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.recipes{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.rcard{background:var(--surface);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;position:relative}
+.rcard h3{margin:0;font-size:1.15rem;line-height:1.2;letter-spacing:-.01em;padding-right:40px}
+.rcard .sub{color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:4px 12px}
+.rcard .sub a{color:var(--plum);text-decoration:underline;text-underline-offset:2px}
+.rcard .made{font-size:.88rem;background:var(--surface-2);border-radius:10px;padding:7px 10px}
+.rcard .made b{font-weight:650}
+.rcard details summary{cursor:pointer;font-weight:600;font-size:.92rem;color:var(--plum);list-style:none}
+.rcard details summary::-webkit-details-marker{display:none}
+.rcard details summary::before{content:"+ "}
+.rcard details[open] summary::before{content:"− "}
+.rcard ul{margin:8px 0 0;padding:0;list-style:none;font-size:.92rem}
+.rcard li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--line)}
+.rcard li:last-child{border-bottom:0}
+.rcard li span:last-child{color:var(--muted);white-space:nowrap}
+.rcard .actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:4px}
+.star{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:transparent;display:grid;place-items:center;color:var(--muted)}
+.star:hover{background:var(--surface-2)}
+.star svg{width:22px;height:22px}
+.star[aria-pressed="true"]{color:#C99A06}
+.star[aria-pressed="true"] svg path{fill:var(--citron);stroke:#B08604}
+.linkbtn{border:0;background:none;padding:4px 0;color:var(--muted);font-size:.9rem;text-decoration:underline;text-underline-offset:2px}
+.linkbtn:hover{color:var(--danger)}
+.add-card{border:1.5px dashed var(--line);border-radius:18px;background:transparent;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:650;font-size:1.05rem;color:var(--ink)}
+.add-card:hover{border-color:var(--plum);background:var(--surface)}
+.none{color:var(--muted);padding:18px 0}
+
+.timeline{display:flex;flex-direction:column;gap:12px}
+.wk{background:var(--surface);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow)}
+.wk-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.wk-head b{font-size:1.05rem}
+.wk-head span{color:var(--muted);font-size:.92rem}
+.wk .chips .chip{color:var(--ink);font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.wk .chips .chip:hover{border-color:var(--plum)}
+.wk .chip small{color:var(--muted);font-weight:400}
+
+.empty{background:var(--surface);border-radius:20px;padding:28px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;box-shadow:var(--shadow)}
+.empty p{margin:0;max-width:52ch;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);font-size:1.15rem;margin-bottom:4px}
+
+/* Ticket */
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+.ticket{background:var(--ticket);color:var(--ticket-ink);font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.88rem;padding:26px 22px 34px;position:relative;box-shadow:var(--shadow);border-radius:4px 4px 0 0;
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/16px 100%;
+          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/16px 100%}
+.ticket header{text-align:center;padding-bottom:14px;border-bottom:1.5px dashed var(--ticket-line);margin-bottom:12px}
+.ticket header h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+.ticket header p{margin:0;opacity:.75}
+.ticket .cat{margin:16px 0 6px;font-weight:600;display:flex;align-items:center;gap:8px}
+.ticket .cat::after{content:"";flex:1;border-bottom:1px dotted var(--ticket-line)}
+.ticket ul{list-style:none;margin:0;padding:0}
+.ticket li label{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:start;padding:5px 0;cursor:pointer}
+.ticket input[type=checkbox]{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid currentColor;border-radius:3px;margin:2px 0 0;display:grid;place-content:center;opacity:.8}
+.ticket input[type=checkbox]::after{content:"";width:8px;height:8px;background:currentColor;transform:scale(0);transition:transform .12s ease;clip-path:polygon(14% 44%,0 65%,50% 100%,100% 16%,80% 0,43% 62%)}
+.ticket input[type=checkbox]:checked::after{transform:scale(1)}
+.ticket li.done .n,.ticket li.done .q{text-decoration:line-through;opacity:.45}
+.ticket .q{text-align:right;white-space:nowrap;font-weight:500}
+.ticket .q small{display:block;font-size:.76rem;opacity:.6;font-weight:400}
+.ticket .n{overflow-wrap:anywhere}
+.ticket .from{display:block;font-size:.76rem;opacity:.55}
+.ticket .total{border-top:1.5px dashed var(--ticket-line);margin-top:18px;padding-top:12px;display:flex;justify-content:space-between;font-weight:600}
+.ticket .total.big{font-size:1.05rem;border-top:0;margin-top:4px;padding-top:0}
+.ticket .addline{display:flex;gap:8px;margin-top:14px}
+.ticket .addline input{flex:1;min-width:0;background:transparent;border:0;border-bottom:1.5px solid var(--ticket-line);padding:6px 2px;font-family:inherit;font-size:.88rem;color:var(--ticket-ink)}
+.ticket .addline input:focus{outline:none;border-color:var(--ticket-ink)}
+.ticket .addline button{border:1.5px solid var(--ticket-ink);background:transparent;border-radius:6px;padding:4px 10px;font-family:inherit;font-weight:600;color:var(--ticket-ink)}
+.ticket .blank{text-align:center;padding:20px 0 6px;opacity:.7;line-height:1.6}
+.ticket .rm-x{border:0;background:none;color:inherit;opacity:.5;padding:0 2px;font-size:1rem;line-height:1}
+.ticket .rm-x:hover{opacity:1}
+.ticket-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.ticket-actions .btn{flex:1}
+
+/* Budget */
+.bud-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:6px}
+.bud-input{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 16px;font-weight:600}
+.bud-input input{width:84px;border:0;background:var(--surface-2);border-radius:999px;padding:6px 10px;text-align:right;font-weight:700}
+.bud-note{color:var(--muted);font-size:.9rem;margin:0 0 18px;max-width:80ch}
+.bud-status{font-size:.92rem;color:var(--muted)}
+.bud-status.err{color:var(--danger)}
+.dash{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border-radius:20px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.card h3{margin:0 0 14px;font-size:1.05rem;font-weight:700}
+.card .sub{color:var(--muted);font-size:.88rem;margin:-10px 0 14px}
+.kpi{grid-column:span 3;display:flex;flex-direction:column;gap:6px}
+.kpi .lbl{color:var(--muted);font-weight:600;font-size:.92rem}
+.kpi .val{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1}
+.kpi .foot{color:var(--muted);font-size:.86rem}
+.kpi.hero{background:var(--plum);color:var(--on-plum)}
+.kpi.hero .lbl,.kpi.hero .foot{color:inherit;opacity:.8}
+.gauge{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin-top:6px}
+.gauge i{display:block;height:100%;border-radius:999px;background:var(--good)}
+.gauge.over i{background:var(--danger)}
+.val.good{color:var(--good)} .val.bad{color:var(--danger)}
+.c-6{grid-column:span 6} .c-4{grid-column:span 4} .c-8{grid-column:span 8} .c-12{grid-column:span 12}
+.donut-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.donut-wrap svg{width:180px;height:180px;flex:none}
+.legend{list-style:none;margin:0;padding:0;flex:1;min-width:180px;font-size:.9rem}
+.legend li{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line)}
+.legend li:last-child{border-bottom:0}
+.legend i{width:12px;height:12px;border-radius:3px}
+.legend b{font-weight:650;white-space:nowrap}
+.cols{display:flex;align-items:flex-end;gap:10px;height:200px;padding-top:24px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;min-width:0}
+.col .stack{width:100%;max-width:46px;display:flex;flex-direction:column-reverse;border-radius:8px 8px 3px 3px;overflow:hidden;background:var(--surface-2);position:relative}
+.col .stack i{display:block;width:100%}
+.col .v{font-size:.78rem;font-weight:650;white-space:nowrap}
+.col .d{font-size:.82rem;color:var(--muted);font-weight:600}
+.keys{display:flex;gap:16px;font-size:.85rem;color:var(--muted);margin-top:10px}
+.keys span{display:inline-flex;align-items:center;gap:6px}
+.keys i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.hbars{display:flex;flex-direction:column;gap:12px}
+.hb .top{display:flex;justify-content:space-between;gap:10px;font-size:.92rem;margin:0 0 5px}
+.hb .top span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb .top b{white-space:nowrap}
+.hb .bar{height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.hb .bar i{display:block;height:100%;border-radius:999px;background:var(--plum)}
+.hist{position:relative}
+.hist .line{position:absolute;left:0;right:0;border-top:2px dashed var(--danger);opacity:.7;pointer-events:none}
+.hist .line span{position:absolute;right:0;top:-20px;font-size:.75rem;color:var(--danger);font-weight:650}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:620px}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:.85rem;padding:8px 10px;border-bottom:1.5px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.num,th.num{text-align:right}
+td input.price{width:90px;text-align:right;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:5px 8px}
+td input.price:focus{outline:none;border-color:var(--plum)}
+td .pack{color:var(--muted);font-size:.86rem}
+tr.pantry td{opacity:.55}
+.tag{display:inline-block;font-size:.75rem;font-weight:650;border-radius:999px;padding:2px 8px;background:var(--surface-2);color:var(--muted)}
+.tag.warn{background:var(--citron);color:var(--on-citron)}
+
+/* Dialogs */
+dialog{border:0;border-radius:22px;padding:0;background:var(--surface);color:var(--ink);width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 40px);box-shadow:0 30px 80px -20px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
+.dlg{padding:24px;display:flex;flex-direction:column;gap:16px}
+.dlg h2{margin:0;font-size:1.5rem;letter-spacing:-.02em;padding-right:40px}
+.dlg .lead{margin:-8px 0 0;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:.95rem}
+.field .help{color:var(--muted);font-size:.86rem}
+.field input,.field textarea{background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;width:100%}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--plum)}
+.field textarea{min-height:170px;resize:vertical;line-height:1.4}
+.row{display:flex;gap:10px;align-items:center}
+.row input{flex:1}
+.dlg-foot{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.status{font-size:.92rem;padding:10px 12px;border-radius:10px;background:var(--surface-2);display:none}
+.status.show{display:block}
+.status.err{color:var(--danger)}
+.pick-list{display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow:auto}
+.pick-list button{text-align:left;border:1.5px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;font-weight:600}
+.pick-list button:hover{border-color:var(--plum)}
+.pick-list button span{color:var(--muted);font-weight:400;font-size:.88rem;white-space:nowrap}
+.pick-list .fav::before{content:"★ ";color:#C99A06}
+.place-grid{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:stretch;max-height:58vh;overflow:auto}
+.place-grid .d{font-weight:650;align-self:center;padding-right:6px}
+.place-grid button{border:1.5px dashed var(--line);background:transparent;border-radius:12px;padding:9px 10px;text-align:left;font-size:.88rem;min-height:48px;color:var(--muted);font-weight:600}
+.place-grid button.busy{border-style:solid;background:var(--surface-2);color:var(--ink);font-weight:500}
+.place-grid button:hover{border-color:var(--plum);color:var(--plum)}
+.place-grid button small{display:block;font-size:.75rem;color:var(--muted);font-weight:600}
+.close-x{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface-2);font-size:1.2rem}
+.dlg-wrap{position:relative}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;transition:all .2s ease;pointer-events:none;z-index:50}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Login screen */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200;padding:24px}
+.login-card{background:var(--surface);border-radius:24px;padding:clamp(24px,5vw,40px);max-width:460px;width:100%;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:20px}
+.login-card h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1;letter-spacing:-.035em;font-weight:800;margin:0;font-variation-settings:"opsz" 96}
+.login-card h1 .q{display:inline-block;background:var(--citron);color:var(--on-citron);padding:0 .14em;border-radius:.16em;transform:rotate(-2deg)}
+.login-card p{margin:0;color:var(--muted)}
+.login-card .hint{font-size:.9rem;padding-top:4px}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block;margin-right:4px}
+.sync-dot.err{background:var(--danger)}
+.sync-dot.pending{background:var(--citron)}
+
+/* Responsive */
+@media (max-width:1100px){
+  .layout{grid-template-columns:minmax(0,1fr) 330px}
+  .week{grid-template-columns:58px repeat(7,minmax(0,1fr));gap:6px}
+  .slot{min-height:100px;padding:8px}
+  .kpi{grid-column:span 6}
+  .c-4,.c-6,.c-8{grid-column:span 12}
+}
+@media (max-width:979px){
+  .layout,.layout.full{grid-template-columns:1fr}
+  .side{position:static}
+  .tabs .seg{display:grid;grid-template-columns:repeat(4,1fr);width:100%}
+  .tabs button{padding:9px 4px;font-size:.92rem}
+  .week{grid-template-columns:1fr;gap:0}
+  .mday{display:grid;grid-template-columns:64px 1fr 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);align-items:stretch}
+  .mday .dl b{display:block;font-size:1rem}
+  .mday .dl span{color:var(--muted);font-size:.85rem}
+  .mday .dl.today b{color:var(--plum)}
+  .mday .ml{display:block;color:var(--muted);font-size:.75rem;font-weight:600;margin-bottom:4px}
+  .slot{min-height:84px}
+}
+@media (max-width:560px){
+  .mday{grid-template-columns:52px 1fr 1fr;gap:6px}
+  .controls{width:100%}
+  .kpi{grid-column:span 12}
+  .tabs .count{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- Écran de connexion -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <h1>Cette semaine, on mange <span class="q">quoi&nbsp;?</span></h1>
+    <p>Entrez votre code foyer pour accéder au planning partagé de votre famille.</p>
+    <div class="field">
+      <label for="codeInput">Code foyer</label>
+      <input id="codeInput" type="text" placeholder="ex : famille-dupont-2026" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <span class="help">Première fois ? Inventez un code — cela crée votre espace. Sur les autres appareils, entrez le même code.</span>
+    </div>
+    <button class="btn" id="codeSubmit" type="button">Accéder au planning</button>
+    <p id="loginStatus" class="hint" style="color:var(--danger);display:none"></p>
+  </div>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header class="top">
+    <div class="title">
+      <h1>Cette semaine, on mange <span class="q">quoi&nbsp;?</span></h1>
+      <p id="weekLabel">Semaine du …</p>
+    </div>
+    <div class="controls">
+      <div class="pill">Par repas
+        <span class="step">
+          <button type="button" id="pplMinus" aria-label="Une personne de moins">−</button>
+          <output id="pplOut">2</output>
+          <button type="button" id="pplPlus" aria-label="Une personne de plus">+</button>
+        </span>
+        <span>pers.</span>
+      </div>
+      <button class="btn ghost" type="button" id="newWeek">Nouvelle semaine</button>
+      <button class="btn" type="button" id="addRecipeTop">Ajouter une recette</button>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Sections">
+    <div class="seg" role="tablist">
+      <button role="tab" data-tab="planning" aria-selected="true">Planning</button>
+      <button role="tab" data-tab="courses" aria-selected="false">Courses <span class="count" id="cItems"></span></button>
+      <button role="tab" data-tab="recettes" aria-selected="false">Recettes <span class="count" id="cRec"></span></button>
+      <button role="tab" data-tab="budget" aria-selected="false">Budget</button>
+    </div>
+  </nav>
+
+  <div class="layout" id="layout">
+    <main class="main" id="main">
+      <section id="pPlanning" aria-labelledby="hPlan">
+        <div class="section-head">
+          <h2 id="hPlan">Planning</h2>
+          <span class="hint" id="planHint"></span>
+        </div>
+        <div id="emptyHero"></div>
+        <div class="week" id="week"></div>
+      </section>
+
+      <section id="pRecipes" hidden>
+        <div class="section-head">
+          <h2>Mes recettes</h2>
+          <div class="chips" id="recFilter" role="group" aria-label="Filtrer les recettes"></div>
+        </div>
+        <div class="recipes" id="recipes"></div>
+        <div class="section-head" style="margin-top:36px">
+          <h2>Ce qu'on a mangé</h2>
+          <span class="hint">Clique sur un plat pour le remettre au planning.</span>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </section>
+
+      <section id="pBudget" hidden aria-labelledby="hBud">
+        <div class="section-head">
+          <h2 id="hBud">Budget de la semaine</h2>
+        </div>
+        <div class="bud-bar">
+          <label class="bud-input">Budget prévu
+            <input id="budIn" type="number" inputmode="decimal" min="0" step="1"> €
+          </label>
+          <div class="row" style="flex-wrap:wrap">
+            <span class="bud-status" id="budStatus" role="status"></span>
+            <button class="btn" type="button" id="estimate">Estimer les prix U</button>
+          </div>
+        </div>
+        <p class="bud-note">Prix estimés d'après les tarifs habituels des Magasins U (Super U, Hyper U, U Express), en marque U quand elle existe. Ils varient selon le magasin et les promos : corrige un prix dans le tableau si ton ticket est différent.</p>
+        <div id="dash"></div>
+      </section>
+    </main>
+
+    <aside class="side" id="side" aria-label="Liste de courses">
+      <div class="ticket" id="ticket"></div>
+      <div class="ticket-actions">
+        <button class="btn" type="button" id="copyList">Copier la liste</button>
+        <button class="btn ghost" type="button" id="uncheck">Tout décocher</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Dialogs identiques au prototype -->
+<dialog id="dlgAdd" aria-labelledby="addTitle">
+  <form method="dialog" class="dlg-wrap" id="addForm">
+    <button class="close-x" value="cancel" aria-label="Fermer">×</button>
+    <div class="dlg">
+      <h2 id="addTitle">Ajouter une recette</h2>
+      <p class="lead">Colle le lien : l'appli récupère la recette et range les ingrédients par rayon.</p>
+      <div class="field">
+        <label for="fUrl">Lien de la recette</label>
+        <div class="row">
+          <input id="fUrl" type="url" placeholder="https://www.marmiton.org/recettes/…" autocomplete="off">
+          <a class="btn ghost small" id="openUrl" href="#" target="_blank" rel="noopener" aria-disabled="true">Ouvrir</a>
+        </div>
+        <span class="help">La page est lue directement (schema.org) ou via Firecrawl si besoin. Le lien reste enregistré.</span>
+      </div>
+      <div class="field">
+        <label for="fText">Ou colle le texte de la recette</label>
+        <span class="help">Facultatif. Utile si le site bloque la lecture automatique.</span>
+        <textarea id="fText" placeholder="Ingrédients (4 personnes)&#10;600 g de blanc de poulet&#10;1 oignon&#10;40 cl de lait de coco&#10;…"></textarea>
+      </div>
+      <div class="status" id="addStatus" role="status"></div>
+      <div class="dlg-foot">
+        <button class="btn ghost" value="cancel">Annuler</button>
+        <button class="btn" type="button" id="analyze">Ajouter la recette</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgPick" aria-labelledby="pickTitle">
+  <form method="dialog" class="dlg-wrap">
+    <button class="close-x" value="cancel" aria-label="Fermer">×</button>
+    <div class="dlg">
+      <h2 id="pickTitle">Lundi midi</h2>
+      <div class="pick-list" id="pickList"></div>
+      <div class="dlg-foot">
+        <button class="btn ghost" type="button" id="pickNew">Ajouter une nouvelle recette</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgPlace" aria-labelledby="placeTitle">
+  <form method="dialog" class="dlg-wrap">
+    <button class="close-x" value="cancel" aria-label="Fermer">×</button>
+    <div class="dlg">
+      <h2 id="placeTitle">Ajouter au planning</h2>
+      <p class="lead">Choisis le repas. Un créneau déjà pris sera remplacé.</p>
+      <div class="place-grid" id="placeGrid"></div>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  // ── Constantes ─────────────────────────────────────────────────────────────
+  const KEY       = "repas-semaine-v1";
+  const KEY_CODE  = "repas-code-v1";
+  const DAYS      = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+  const MEALS     = [{id:"midi",label:"Midi"},{id:"soir",label:"Soir"}];
+  const CATS      = ["Fruits et légumes","Boucherie et poisson","Crèmerie et œufs","Boulangerie","Épicerie","Surgelés","Boissons","Hygiène et maison","Autres"];
+  const UNITS     = ["g","kg","ml","cl","l","c. à soupe","c. à café","pincée",""];
+  const STAR      = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6-4.5-4.2 6.1-.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+
+  const $  = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  const eur = n => (Number(n)||0).toLocaleString("fr-FR", { style:"currency", currency:"EUR" });
+  const wideMQ = window.matchMedia("(min-width:980px)");
+
+  function mondayOf(d){ const x = new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate() - ((x.getDay()+6)%7)); return x; }
+  const dayDate = (ws, i) => { const d = new Date(ws); d.setDate(d.getDate()+i); return d; };
+  const dateFR  = (d, opt) => new Date(d).toLocaleDateString("fr-FR", opt || { day:"numeric", month:"long" });
+
+  // ── Authentification & sync ────────────────────────────────────────────────
+  let householdCode = localStorage.getItem(KEY_CODE) || "";
+  let codeHash      = "";
+  let lastSyncTs    = "";
+  let syncTimer     = null;
+  let pollInterval  = null;
+
+  async function sha256(str) {
+    const enc = new TextEncoder().encode(str.trim().toLowerCase());
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  async function loadFromServer() {
+    if (!codeHash) return false;
+    try {
+      const res = await fetch(`/api/sync?code=${codeHash}`);
+      if (!res.ok) return false;
+      const { data, updated_at } = await res.json();
+      if (data && typeof data === "object") {
+        state = Object.assign({ people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] }, data);
+        state.prices   = state.prices   || {};
+        state.history  = state.history  || [];
+        if (state.budget == null) state.budget = 80;
+        lastSyncTs = updated_at || "";
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+        return true;
+      }
+    } catch(e) {}
+    return false;
+  }
+
+  async function pushToServer() {
+    if (!codeHash) return;
+    try {
+      await fetch("/api/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: codeHash, data: state }),
+      });
+    } catch(e) {}
+  }
+
+  function startPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(async () => {
+      if (!codeHash || document.hidden) return;
+      try {
+        const res = await fetch(`/api/sync?code=${codeHash}`);
+        if (!res.ok) return;
+        const { data, updated_at } = await res.json();
+        if (data && updated_at && updated_at !== lastSyncTs) {
+          const remote = Object.assign({ people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] }, data);
+          // Fusionner : on garde le serveur (dernière écriture gagne)
+          state = remote;
+          state.prices  = state.prices  || {};
+          state.history = state.history || {};
+          lastSyncTs = updated_at;
+          try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+          render();
+          toast("Planning mis à jour");
+        }
+      } catch(e) {}
+    }, 30000);
+  }
+
+  async function login(code) {
+    if (!code || code.trim().length < 3) {
+      showLoginError("Le code doit faire au moins 3 caractères.");
+      return;
+    }
+    const btn = $("#codeSubmit");
+    btn.disabled = true; btn.textContent = "Connexion…";
+    try {
+      codeHash = await sha256(code);
+      localStorage.setItem(KEY_CODE, code);
+      householdCode = code;
+
+      // Charger depuis le serveur (ou utiliser l'état local si serveur inaccessible)
+      await loadFromServer();
+
+      // Passage automatique à la nouvelle semaine
+      const thisMonday = mondayOf(new Date()).toISOString();
+      if (new Date(state.weekStart) < new Date(thisMonday)) {
+        const had = Object.keys(state.plan).length;
+        archiveWeek();
+        state.plan = {}; state.checked = {}; state.extras = [];
+        state.weekStart = thisMonday;
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+        if (had) setTimeout(() => toast("La semaine dernière est rangée dans Recettes"), 600);
+      }
+
+      $("#loginScreen").hidden = true;
+      $("#app").hidden = false;
+      startPolling();
+      render();
+    } catch(e) {
+      showLoginError("Erreur de connexion. Vérifie ta connexion internet.");
+    } finally {
+      btn.disabled = false; btn.textContent = "Accéder au planning";
+    }
+  }
+
+  function showLoginError(msg) {
+    const el = $("#loginStatus");
+    el.textContent = msg; el.style.display = "";
+  }
+
+  // ── État ───────────────────────────────────────────────────────────────────
+  let state = { people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] };
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && typeof saved === "object") state = Object.assign(state, saved); } catch(e) {}
+  state.prices  = state.prices  || {};
+  state.history = state.history || [];
+  if (state.budget == null) state.budget = 80;
+
+  function saveLocal() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+  }
+  function save() {
+    saveLocal();
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(pushToServer, 1200);
+  }
+
+  let tab = "planning", recFilter = "all", pickSlot = null, placeRecipe = null;
+  const getR = id => state.recipes.find(r => r.id === id);
+
+  // ── Quantités ──────────────────────────────────────────────────────────────
+  function base(qty, unit){
+    const u = (unit||"").trim().toLowerCase();
+    if (qty == null || isNaN(qty)) return { q:null, u };
+    if (u === "kg") return { q: qty*1000, u:"g" };
+    if (u === "cl") return { q: qty*10,   u:"ml" };
+    if (u === "l")  return { q: qty*1000, u:"ml" };
+    return { q: qty, u };
+  }
+  const num = n => String(Math.round(n*10)/10).replace(".", ",");
+  function fmt(q, u){
+    if (q == null) return "au goût";
+    if (u === "g")  return q >= 1000 ? num(q/1000) + " kg" : Math.round(q) + " g";
+    if (u === "ml") { if (q >= 1000) return num(q/1000) + " l"; if (Math.round(q) % 10 === 0) return Math.round(q/10) + " cl"; return Math.round(q) + " ml"; }
+    const half = Math.ceil(q*2)/2, s = num(half);
+    if (!u) return "× " + s;
+    if (u === "pincée") return s + (half > 1 ? " pincées" : " pincée");
+    return s + " " + u;
+  }
+
+  // ── Liste agrégée + coûts ──────────────────────────────────────────────────
+  function listItems(){
+    const map = new Map();
+    for (const [slot, p] of Object.entries(state.plan)) {
+      const r = getR(p.recipeId); if (!r) continue;
+      const factor = (p.portions || state.people) / (r.servings || 4);
+      for (const ing of r.ingredients) {
+        const b = base(ing.qty, ing.unit);
+        const name = (ing.name||"").trim().toLowerCase(); if (!name) continue;
+        const key = name + "|" + b.u;
+        const cur = map.get(key) || { key, name, u:b.u, q:0, unknown:false, cat: CATS.includes(ing.cat) ? ing.cat : "Autres", from:new Set(), contrib:{} };
+        const c = b.q == null ? null : b.q * factor;
+        if (c == null) cur.unknown = true; else cur.q += c;
+        cur.contrib[slot] = (cur.contrib[slot] || 0) + (c || 0);
+        cur.from.add(r.title);
+        map.set(key, cur);
+      }
+    }
+    const items = [...map.values()].map(i => { const q = (i.q === 0 && i.unknown) ? null : i.q; return { ...i, q, need: q == null ? "au goût" : fmt(q, i.u).replace("× ", "") + (i.unknown && q ? " +" : "") }; });
+    for (const x of state.extras) items.push({ key:"x:"+x.id, name:x.name, need:"1", cat:"Autres", extra:true, contrib:{}, from:new Set(), q:1, u:"" });
+    return items;
+  }
+  function priceOf(it){
+    const p = state.prices[it.key];
+    if (!p || p.price == null) return null;
+    if (!p.manual && p.need !== it.need) return null;
+    return p;
+  }
+  function costs(){
+    const items = listItems();
+    let total = 0, unpriced = 0, extrasCost = 0;
+    const byCat = {}, bySlot = {};
+    const rows = [];
+    for (const it of items) {
+      const p = priceOf(it);
+      rows.push({ it, p });
+      if (!p) { unpriced++; continue; }
+      if (p.pantry) continue;
+      total += p.price;
+      byCat[it.cat] = (byCat[it.cat] || 0) + p.price;
+      if (it.extra) { extrasCost += p.price; continue; }
+      const slots = Object.keys(it.contrib);
+      const sum = slots.reduce((a, s) => a + it.contrib[s], 0);
+      for (const s of slots) bySlot[s] = (bySlot[s] || 0) + p.price * (sum > 0 ? it.contrib[s] / sum : 1 / slots.length);
+    }
+    return { items, rows, total, unpriced, byCat, bySlot, extrasCost };
+  }
+
+  // ── Historique ─────────────────────────────────────────────────────────────
+  function archiveWeek(){
+    const valid = Object.entries(state.plan).filter(([, p]) => getR(p.recipeId));
+    if (!valid.length) return;
+    const c = costs();
+    state.history = state.history.filter(h => h.weekStart !== state.weekStart);
+    state.history.unshift({
+      weekStart: state.weekStart, budget: state.budget, total: Math.round(c.total*100)/100, complete: c.unpriced === 0,
+      meals: valid.map(([k, p]) => ({ k, recipeId:p.recipeId, title:getR(p.recipeId).title, portions:p.portions || state.people, cost: Math.round((c.bySlot[k]||0)*100)/100 }))
+    });
+    state.history = state.history.slice(0, 52);
+  }
+  function madeStats(){
+    const m = {};
+    const add = (id, d) => { const s = m[id] || (m[id] = { count:0, last:null }); s.count++; if (!s.last || d > s.last) s.last = d; };
+    for (const h of state.history) for (const meal of h.meals) add(meal.recipeId, dayDate(h.weekStart, +meal.k.split("-")[0]));
+    const today = new Date(); today.setHours(0,0,0,0);
+    for (const [k, p] of Object.entries(state.plan)) { const d = dayDate(state.weekStart, +k.split("-")[0]); if (d < today) add(p.recipeId, d); }
+    return m;
+  }
+
+  // ── Onglets ────────────────────────────────────────────────────────────────
+  function applyTab(){
+    const wide = wideMQ.matches;
+    let t = tab; if (wide && t === "courses") t = "planning";
+    $("#pPlanning").hidden = t !== "planning";
+    $("#pRecipes").hidden  = t !== "recettes";
+    $("#pBudget").hidden   = t !== "budget";
+    const showSide = wide ? t === "planning" : t === "courses";
+    $("#side").hidden  = !showSide;
+    $("#main").hidden  = !wide && t === "courses";
+    $("#layout").classList.toggle("full", !showSide || !wide);
+    document.querySelectorAll(".tabs [data-tab]").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t ? "true" : "false"));
+  }
+
+  // ── Rendu ──────────────────────────────────────────────────────────────────
+  function render(){
+    $("#weekLabel").textContent = "Semaine du " + dateFR(state.weekStart);
+    $("#pplOut").textContent = state.people;
+    renderWeek(); renderTicket(); renderRecipes(); renderBudget();
+    const planned = Object.keys(state.plan).length;
+    $("#planHint").textContent = planned ? planned + (planned > 1 ? " repas prévus" : " repas prévu") + " sur 14" : "Clique sur un créneau pour y placer une recette.";
+    $("#cRec").textContent = state.recipes.length ? "(" + state.recipes.length + ")" : "";
+    applyTab();
+  }
+
+  function renderWeek(){
+    const today = new Date(); today.setHours(0,0,0,0);
+    const dates = DAYS.map((_, i) => dayDate(state.weekStart, i));
+    const c = costs();
+    let h = "";
+    if (wideMQ.matches) {
+      h = "<div></div>";
+      dates.forEach((d, i) => { h += `<div class="dayhead${d.getTime() === today.getTime() ? " today" : ""}"><b>${DAYS[i]}</b><span>${d.getDate()} ${dateFR(d,{month:"short"})}</span></div>`; });
+      for (const m of MEALS) { h += `<div class="mealhead">${m.label}</div>`; DAYS.forEach((_, i) => { h += slotHTML(i, m.id, c); }); }
+    } else {
+      dates.forEach((d, i) => {
+        h += `<div class="mday"><div class="dl${d.getTime() === today.getTime() ? " today" : ""}"><b>${DAYS[i].slice(0,3)}.</b><span>${d.getDate()}</span></div>`;
+        for (const m of MEALS) h += `<div><span class="ml">${m.label}</span>${slotHTML(i, m.id, c)}</div>`;
+        h += "</div>";
+      });
+    }
+    $("#week").innerHTML = h;
+    $("#emptyHero").innerHTML = state.recipes.length ? "" :
+      `<div class="empty" style="margin-bottom:18px"><p><strong>Commence par ajouter une recette.</strong>Colle le lien et le texte d'une recette, place-la dans la semaine, et la liste de courses se remplit toute seule.</p><div class="row" style="flex-wrap:wrap"><button class="btn" type="button" data-act="add">Ajouter une recette</button><button class="btn ghost" type="button" data-act="demo">Essayer avec des exemples</button></div></div>`;
+  }
+
+  function slotHTML(dayIdx, meal, c){
+    const key = dayIdx + "-" + meal;
+    const p = state.plan[key];
+    const label = DAYS[dayIdx] + " " + meal;
+    const r = p && getR(p.recipeId);
+    if (!r) return `<button class="slot" type="button" data-slot="${key}" aria-label="Choisir une recette pour ${label}"><span class="plus">+</span></button>`;
+    const n = p.portions || state.people;
+    const cost = c.bySlot[key];
+    return `<div class="slot filled">
+      <button class="name" type="button" data-slot="${key}" aria-label="Changer la recette de ${label}">${r.fav ? "★ " : ""}${esc(r.title)}</button>
+      ${cost ? `<span class="cost">≈ ${eur(cost)}</span>` : ""}
+      <div class="meta">
+        <span class="mini"><button type="button" data-por="${key}" data-d="-1" aria-label="Une portion de moins">−</button><span>${n} pers.</span><button type="button" data-por="${key}" data-d="1" aria-label="Une portion de plus">+</button></span>
+        <button class="rm" type="button" data-clear="${key}" aria-label="Retirer le repas de ${label}">×</button>
+      </div></div>`;
+  }
+
+  function renderRecipes(){
+    const stats = madeStats();
+    const favN  = state.recipes.filter(r => r.fav).length;
+    const madeN = state.recipes.filter(r => stats[r.id]).length;
+    $("#recFilter").innerHTML = [["all","Toutes",state.recipes.length],["fav","Favoris",favN],["made","Déjà faites",madeN]]
+      .map(([id, l, n]) => `<button class="chip" type="button" data-filter="${id}" aria-pressed="${recFilter === id}">${l} (${n})</button>`).join("");
+    let list = state.recipes.slice();
+    if (recFilter === "fav") list = list.filter(r => r.fav);
+    if (recFilter === "made") list = list.filter(r => stats[r.id]).sort((a, b) => stats[b.id].last - stats[a.id].last);
+    else list.sort((a, b) => (b.fav ? 1 : 0) - (a.fav ? 1 : 0));
+    let h = "";
+    for (const r of list) {
+      const s = stats[r.id];
+      let host = ""; try { if (r.url) host = new URL(r.url).hostname.replace(/^www\./, ""); } catch(e) {}
+      h += `<article class="rcard">
+        <button class="star" type="button" data-fav="${r.id}" aria-pressed="${!!r.fav}" aria-label="${r.fav ? "Retirer des favoris" : "Mettre en favori"}">${STAR}</button>
+        <h3>${esc(r.title)}</h3>
+        <div class="sub"><span>Pour ${r.servings} pers.</span><span>${r.ingredients.length} ingrédients</span>${host ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(host)}</a>` : ""}</div>
+        ${s ? `<div class="made">Faite <b>${s.count} fois</b>, la dernière le ${dateFR(s.last,{weekday:"long",day:"numeric",month:"long"})}</div>` : ""}
+        <details><summary>Ingrédients</summary><ul>${r.ingredients.map(i => { const b = base(i.qty,i.unit); return `<li><span>${esc(i.name)}</span><span>${esc(fmt(b.q, b.u))}</span></li>`; }).join("")}</ul></details>
+        <div class="actions"><button class="btn small" type="button" data-place="${r.id}">Ajouter au planning</button><button class="linkbtn" type="button" data-del="${r.id}">Supprimer</button></div>
+      </article>`;
+    }
+    if (!list.length && recFilter === "fav") h += `<p class="none">Aucun favori pour l'instant. Touche l'étoile d'une recette pour la retrouver ici.</p>`;
+    if (!list.length && recFilter === "made") h += `<p class="none">Les recettes apparaissent ici une fois leur jour passé.</p>`;
+    if (recFilter === "all") h += `<button class="add-card" type="button" data-act="add">+ Ajouter une recette<small>à partir d'un lien</small></button>`;
+    $("#recipes").innerHTML = h;
+
+    const today = new Date(); today.setHours(0,0,0,0);
+    const weeks = [];
+    const cur = Object.entries(state.plan).filter(([k, p]) => getR(p.recipeId) && dayDate(state.weekStart, +k.split("-")[0]) < today)
+      .map(([k, p]) => ({ k, recipeId:p.recipeId, title:getR(p.recipeId).title }));
+    if (cur.length) weeks.push({ label:"Cette semaine", meals:cur, total:null });
+    for (const w of state.history) weeks.push({ label:"Semaine du " + dateFR(w.weekStart), meals:w.meals, total:w.total, complete:w.complete });
+    let t = "";
+    for (const w of weeks) {
+      const sorted = w.meals.slice().sort((a, b) => a.k.localeCompare(b.k));
+      t += `<div class="wk"><div class="wk-head"><b>${esc(w.label)}</b><span>${w.meals.length} repas${w.total ? ", " + (w.complete ? "" : "environ ") + eur(w.total) : ""}</span></div><div class="chips">`;
+      for (const m of sorted) {
+        const [d, meal] = m.k.split("-");
+        const exists = getR(m.recipeId);
+        t += exists
+          ? `<button class="chip" type="button" data-place="${m.recipeId}">${exists.fav ? "★ " : ""}${esc(exists.title)} <small>${DAYS[+d].slice(0,3).toLowerCase()}. ${meal}</small></button>`
+          : `<span class="chip">${esc(m.title)} <small>${DAYS[+d].slice(0,3).toLowerCase()}. ${meal}</small></span>`;
+      }
+      t += "</div></div>";
+    }
+    $("#timeline").innerHTML = t || `<p class="none">Rien encore. Les repas passés s'afficheront ici, semaine par semaine.</p>`;
+  }
+
+  function renderTicket(){
+    const c = costs();
+    const items = c.items.filter(i => !i.extra);
+    const meals = Object.values(state.plan).filter(p => getR(p.recipeId)).length;
+    let h = `<header><h2>Liste de courses</h2><p>Semaine du ${dateFR(state.weekStart)}</p></header>`;
+    if (!items.length && !state.extras.length) h += `<p class="blank">La liste est vide.<br>Place des recettes dans le planning pour la remplir.</p>`;
+    for (const cat of CATS) {
+      const g = items.filter(i => i.cat === cat).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+      if (!g.length) continue;
+      h += `<div class="cat">${esc(cat)}</div><ul>`;
+      for (const it of g) {
+        const done = !!state.checked[it.key];
+        const p = priceOf(it);
+        h += `<li class="${done ? "done" : ""}"><label><input type="checkbox" data-chk="${esc(it.key)}" ${done ? "checked" : ""}><span class="n">${esc(it.name)}<span class="from">${esc([...it.from].join(", "))}</span></span><span class="q">${esc(it.need)}${p && !p.pantry ? `<small>${eur(p.price)}</small>` : ""}</span></label></li>`;
+      }
+      h += "</ul>";
+    }
+    if (state.extras.length) {
+      h += "<div class=\"cat\">En plus</div><ul>";
+      for (const x of state.extras) {
+        const p = priceOf({ key:"x:"+x.id, need:"1" });
+        h += `<li class="${x.done ? "done" : ""}"><label><input type="checkbox" data-xchk="${x.id}" ${x.done ? "checked" : ""}><span class="n">${esc(x.name)}</span><span class="q">${p ? `<small>${eur(p.price)}</small>` : ""}<button type="button" class="rm-x" data-xdel="${x.id}" aria-label="Retirer ${esc(x.name)}">×</button></span></label></li>`;
+      }
+      h += "</ul>";
+    }
+    h += `<form class="addline" id="extraForm"><input id="extraIn" placeholder="Ajouter un article (lessive, café…)" aria-label="Ajouter un article"><button type="submit">Ajouter</button></form>`;
+    const total = c.items.length;
+    h += `<div class="total"><span>${total} article${total > 1 ? "s" : ""}</span><span>${meals} repas</span></div>`;
+    if (c.total) h += `<div class="total big"><span>Total estimé U</span><span>${c.unpriced ? "≈ " : ""}${eur(c.total)}</span></div>`;
+    $("#ticket").innerHTML = h;
+    $("#cItems").textContent = total ? "(" + total + ")" : "";
+  }
+
+  // ── Budget ─────────────────────────────────────────────────────────────────
+  function renderBudget(){
+    const bi = $("#budIn"); if (document.activeElement !== bi) bi.value = state.budget;
+    const c = costs();
+    const st = $("#budStatus");
+    if (!busyEstimate) { st.className = "bud-status"; st.textContent = c.unpriced ? `${c.unpriced} article${c.unpriced > 1 ? "s" : ""} sans prix` : (c.items.length ? "Tous les prix sont à jour" : ""); }
+    const dash = $("#dash");
+    if (!c.items.length) { dash.innerHTML = `<div class="empty"><p><strong>Rien à chiffrer pour l'instant.</strong>Place des recettes dans le planning, puis lance l'estimation des prix.</p><button class="btn" type="button" data-tab-go="planning">Aller au planning</button></div>`; return; }
+    if (c.unpriced === c.items.length) { dash.innerHTML = `<div class="empty"><p><strong>${c.items.length} articles à chiffrer.</strong>Lance l'estimation pour voir le coût de la semaine, repas par repas.</p><button class="btn" type="button" data-act="estimate">Estimer les prix U</button></div>` + historyCard(c) + tableCard(c); return; }
+
+    const budget = Number(state.budget) || 0;
+    const rest   = budget - c.total;
+    const pct    = budget ? Math.min(100, c.total / budget * 100) : 0;
+    const mealsKeys = Object.keys(state.plan).filter(k => getR(state.plan[k].recipeId));
+    const mealCost  = mealsKeys.reduce((a, k) => a + (c.bySlot[k] || 0), 0);
+    const portions  = mealsKeys.reduce((a, k) => a + (state.plan[k].portions || state.people), 0);
+    const approx = c.unpriced ? "≈ " : "";
+
+    let h = `<div class="dash">
+      <div class="card kpi hero"><span class="lbl">Total estimé</span><span class="val">${approx}${eur(c.total)}</span><span class="foot">${c.items.length} articles${c.unpriced ? `, dont ${c.unpriced} sans prix` : ""}</span></div>
+      <div class="card kpi"><span class="lbl">${rest >= 0 ? "Reste sur le budget" : "Dépassement"}</span><span class="val ${rest >= 0 ? "good" : "bad"}">${eur(Math.abs(rest))}</span><div class="gauge ${rest < 0 ? "over" : ""}"><i style="width:${pct}%"></i></div><span class="foot">${Math.round(budget ? c.total/budget*100 : 0)} % de ${eur(budget)}</span></div>
+      <div class="card kpi"><span class="lbl">Par repas</span><span class="val">${mealsKeys.length ? eur(mealCost / mealsKeys.length) : "–"}</span><span class="foot">${mealsKeys.length} repas planifiés</span></div>
+      <div class="card kpi"><span class="lbl">Par personne et par repas</span><span class="val">${portions ? eur(mealCost / portions) : "–"}</span><span class="foot">${portions} portions au total</span></div>`;
+
+    const cats = CATS.map((k, i) => ({ label:k, v:c.byCat[k] || 0, color:`var(--k${i})` })).filter(x => x.v > 0).sort((a, b) => b.v - a.v);
+    h += `<div class="card c-6"><h3>Par rayon</h3><div class="donut-wrap">${donut(cats, c.total)}<ul class="legend">${cats.map(x => `<li><i style="background:${x.color}"></i><span>${esc(x.label)}</span><b>${eur(x.v)}</b></li>`).join("")}</ul></div></div>`;
+
+    const days = DAYS.map((d, i) => ({ d:d.slice(0,3), midi:c.bySlot[i+"-midi"] || 0, soir:c.bySlot[i+"-soir"] || 0 }));
+    const maxD = Math.max(1, ...days.map(x => x.midi + x.soir));
+    h += `<div class="card c-6"><h3>Par jour</h3><div class="cols">${days.map(x => { const t = x.midi + x.soir; return `<div class="col"><span class="v">${t ? eur(t).replace(/,\d\d/, "") : ""}</span><div class="stack" style="height:${Math.max(4, t/maxD*100)}%">${t ? `<i style="height:${x.midi/t*100}%;background:var(--plum)"></i><i style="height:${x.soir/t*100}%;background:var(--citron)"></i>` : ""}</div><span class="d">${x.d}</span></div>`; }).join("")}</div><div class="keys"><span><i style="background:var(--plum)"></i>Midi</span><span><i style="background:var(--citron)"></i>Soir</span></div></div>`;
+
+    const byRec = {};
+    for (const k of mealsKeys) { const r = getR(state.plan[k].recipeId); const e = byRec[r.id] || (byRec[r.id] = { t:r.title, v:0, n:0 }); e.v += c.bySlot[k] || 0; e.n++; }
+    const recs = Object.values(byRec).sort((a, b) => b.v - a.v);
+    const maxR = Math.max(1, ...recs.map(x => x.v));
+    h += `<div class="card c-6"><h3>Par recette</h3><p class="sub">Coût de la recette sur la semaine, toutes ses répétitions comprises.</p><div class="hbars">${recs.map(x => `<div class="hb"><div class="top"><span>${esc(x.t)}${x.n > 1 ? ` ×${x.n}` : ""}</span><b>${eur(x.v)}</b></div><div class="bar"><i style="width:${x.v/maxR*100}%"></i></div></div>`).join("")}</div></div>`;
+
+    const top  = c.rows.filter(r => r.p && !r.p.pantry).sort((a, b) => b.p.price - a.p.price).slice(0, 6);
+    const maxT = Math.max(1, ...top.map(x => x.p.price));
+    h += `<div class="card c-6"><h3>Articles les plus chers</h3><p class="sub">Les pistes pour réduire la note.</p><div class="hbars">${top.map(x => `<div class="hb"><div class="top"><span>${esc(x.it.name)}</span><b>${eur(x.p.price)}</b></div><div class="bar"><i style="width:${x.p.price/maxT*100}%;background:var(--k1)"></i></div></div>`).join("")}</div></div>`;
+
+    h += historyCard(c, true) + tableCard(c) + "</div>";
+    dash.innerHTML = h;
+  }
+
+  function historyCard(c, inDash){
+    const weeks = state.history.slice(0, 7).reverse().map(w => ({ l: dateFR(w.weekStart,{day:"numeric",month:"short"}), v:w.total, b:w.budget }));
+    weeks.push({ l:"Cette sem.", v:c.total, b:state.budget, cur:true });
+    if (weeks.length < 2) return "";
+    const max = Math.max(1, ...weeks.map(w => Math.max(w.v, w.b || 0)));
+    const b = Number(state.budget) || 0;
+    return `<div class="card c-12" ${inDash ? "" : 'style="margin-top:14px"'}><h3>Semaine après semaine</h3><div class="hist"><div class="cols">${weeks.map(w => `<div class="col"><span class="v">${w.v ? eur(w.v).replace(/,\d\d/, "") : ""}</span><div class="stack" style="height:${Math.max(4, w.v/max*100)}%"><i style="height:100%;background:${w.cur ? "var(--plum)" : "var(--k8)"}"></i></div><span class="d">${esc(w.l)}</span></div>`).join("")}</div>${b ? `<div class="line" style="bottom:calc(${b/max} * (200px - 48px) + 26px)"><span>Budget ${eur(b)}</span></div>` : ""}</div></div>`;
+  }
+
+  function tableCard(c){
+    const rows = c.rows.slice().sort((a, b) => CATS.indexOf(a.it.cat) - CATS.indexOf(b.it.cat) || a.it.name.localeCompare(b.it.name, "fr"));
+    return `<div class="card c-12" style="margin-top:14px"><h3>Détail des prix</h3><div class="tbl-wrap"><table>
+      <thead><tr><th>Article</th><th>Besoin</th><th>Format chez U</th><th class="num">Prix</th><th>Déjà au placard</th></tr></thead><tbody>
+      ${rows.map(({ it, p }) => {
+        const raw = state.prices[it.key];
+        const stale = raw && !p;
+        return `<tr class="${p && p.pantry ? "pantry" : ""}"><td>${esc(it.name)}<br><span class="tag">${esc(it.cat)}</span></td><td>${esc(it.need)}</td>
+        <td>${p ? `<span class="pack">${esc(p.pack || "")}</span>` : `<span class="tag ${stale ? "warn" : ""}">${stale ? "quantité changée" : "à estimer"}</span>`}</td>
+        <td class="num"><input class="price" type="number" step="0.01" min="0" inputmode="decimal" data-price="${esc(it.key)}" data-need="${esc(it.need)}" value="${p ? p.price : ""}" placeholder="–" aria-label="Prix de ${esc(it.name)} en euros"></td>
+        <td><input type="checkbox" data-pantry="${esc(it.key)}" data-need="${esc(it.need)}" ${p && p.pantry ? "checked" : ""} aria-label="${esc(it.name)} déjà au placard"></td></tr>`;
+      }).join("")}
+      </tbody></table></div></div>`;
+  }
+
+  function donut(data, total){
+    const R = 70, C = 2 * Math.PI * R; let off = 0;
+    const segs = data.map(x => { const len = x.v / (total || 1) * C; const s = `<circle cx="90" cy="90" r="${R}" fill="none" stroke="${x.color}" stroke-width="28" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 90 90)"/>`; off += len; return s; }).join("");
+    return `<svg viewBox="0 0 180 180" role="img" aria-label="Répartition des dépenses par rayon"><circle cx="90" cy="90" r="${R}" fill="none" stroke="var(--surface-2)" stroke-width="28"/>${segs}<text x="90" y="86" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="inherit">Total</text><text x="90" y="106" text-anchor="middle" font-size="19" font-weight="800" fill="var(--ink)" font-family="inherit">${eur(total).replace(/\s/g," ")}</text></svg>`;
+  }
+
+  // ── Estimation des prix (table statique) ───────────────────────────────────
+  let busyEstimate = false;
+  async function estimate(){
+    if (busyEstimate) return;
+    const c = costs();
+    const todo = c.rows.filter(r => !r.p && !(state.prices[r.it.key] && state.prices[r.it.key].manual)).map(r => r.it);
+    const st = $("#budStatus");
+    if (!todo.length) { toast(c.items.length ? "Tous les prix sont déjà estimés" : "Ajoute d'abord des repas au planning"); return; }
+    busyEstimate = true;
+    const btns = document.querySelectorAll('#estimate,[data-act="estimate"]');
+    btns.forEach(b => { b.disabled = true; b.textContent = "Estimation…"; });
+    st.className = "bud-status"; st.textContent = `Estimation de ${todo.length} article${todo.length > 1 ? "s" : ""}…`;
+    try {
+      const res = await fetch("/api/prices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: todo.map(it => ({ key:it.key, name:it.name, need:it.need, qty:it.q, unit:it.u })) })
+      });
+      if (!res.ok) throw new Error("Erreur serveur");
+      const { prices } = await res.json();
+      let n = 0;
+      for (const row of prices) {
+        if (row.price != null) {
+          state.prices[row.key] = { price: row.price, pack: row.pack || "", pantry: !!row.pantry, need: row.need, manual: false };
+          n++;
+        }
+      }
+      save(); render();
+      toast(n ? `${n} prix estimés` : "Aucune correspondance — saisis les prix manuellement");
+      if (!n) { st.className = "bud-status err"; st.textContent = "Articles inconnus. Saisis les prix dans le tableau."; }
+    } catch(e) {
+      st.className = "bud-status err"; st.textContent = "Erreur lors de l'estimation. Vérifie ta connexion.";
+    } finally {
+      busyEstimate = false;
+      document.querySelectorAll('#estimate,[data-act="estimate"]').forEach(b => { b.disabled = false; b.textContent = "Estimer les prix U"; });
+    }
+  }
+
+  // ── Dialogues ──────────────────────────────────────────────────────────────
+  function openPick(slot){
+    pickSlot = slot;
+    const [d, m] = slot.split("-");
+    $("#pickTitle").textContent = DAYS[+d] + " " + m;
+    const list = state.recipes.slice().sort((a, b) => (b.fav ? 1 : 0) - (a.fav ? 1 : 0));
+    $("#pickList").innerHTML = list.length
+      ? list.map(r => `<button type="button" data-pick="${r.id}"><span class="${r.fav ? "fav" : ""}" style="color:var(--ink);font-weight:600;font-size:1rem;white-space:normal">${esc(r.title)}</span><span>${r.ingredients.length} ingr.</span></button>`).join("")
+      : `<p style="margin:0;color:var(--muted)">Aucune recette pour l'instant. Ajoute ta première recette.</p>`;
+    $("#dlgPick").showModal();
+  }
+  function openPlace(recipeId){
+    const r = getR(recipeId); if (!r) return;
+    placeRecipe = recipeId;
+    $("#placeTitle").textContent = "Ajouter « " + r.title + " »";
+    let h = "";
+    DAYS.forEach((d, i) => {
+      h += `<span class="d">${d.slice(0,3)}. ${dayDate(state.weekStart, i).getDate()}</span>`;
+      for (const m of MEALS) {
+        const k = i + "-" + m.id, p = state.plan[k], cur = p && getR(p.recipeId);
+        h += `<button type="button" data-to="${k}" class="${cur ? "busy" : ""}"><small>${m.label}</small>${cur ? esc(cur.title) : "Libre"}</button>`;
+      }
+    });
+    $("#placeGrid").innerHTML = h;
+    $("#dlgPlace").showModal();
+  }
+  function openAdd(){
+    $("#addForm").reset(); setStatus(""); syncOpen();
+    if ($("#dlgPick").open) $("#dlgPick").close();
+    $("#dlgAdd").showModal();
+    setTimeout(() => $("#fUrl").focus(), 30);
+  }
+  function setStatus(msg, err){ const s = $("#addStatus"); s.textContent = msg; s.className = "status" + (msg ? " show" : "") + (err ? " err" : ""); }
+  function syncOpen(){
+    const v = $("#fUrl").value.trim(), a = $("#openUrl");
+    let ok = false; try { ok = /^https?:$/.test(new URL(v).protocol); } catch(e) {}
+    a.href = ok ? v : "#"; a.setAttribute("aria-disabled", ok ? "false" : "true"); a.style.opacity = ok ? "1" : ".45"; a.style.pointerEvents = ok ? "auto" : "none";
+  }
+
+  // ── Ajout de recette ───────────────────────────────────────────────────────
+  async function analyze(){
+    const url  = $("#fUrl").value.trim();
+    let   text = $("#fText").value.trim();
+    let validUrl = false;
+    try { validUrl = /^https?:$/.test(new URL(url).protocol); } catch(e) {}
+    if (!text && !validUrl) {
+      setStatus(url ? "Ce lien n'est pas valide. Il doit commencer par https://" : "Colle le lien ou le texte de la recette.", true);
+      if (!text) $("#fUrl").focus(); return;
+    }
+    const btn = $("#analyze"); btn.disabled = true; btn.textContent = "Récupération…";
+    try {
+      setStatus(validUrl ? "Lecture de la page…" : "Analyse de la recette…");
+      const res = await fetch("/api/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: validUrl ? url : undefined, text: text || undefined })
+      });
+      const data = await res.json();
+      if (!res.ok) throw { code: data.code || "unknown", msg: data.error || "Erreur inconnue" };
+
+      const recipe = {
+        id: uid(),
+        title: String(data.title || "Recette sans nom").trim().slice(0, 80),
+        servings: Math.max(1, Math.round(Number(data.servings) || 4)),
+        url: validUrl ? url : "",
+        ingredients: data.ingredients || [],
+        fav: false
+      };
+      if (!recipe.ingredients.length) throw { code:"no_ingredients", msg:"Aucun ingrédient trouvé. Colle le texte de la recette." };
+
+      state.recipes.unshift(recipe);
+      if (pickSlot) { state.plan[pickSlot] = { recipeId: recipe.id, portions: state.people }; pickSlot = null; }
+      save(); render(); $("#dlgAdd").close();
+      toast("« " + recipe.title + " » ajoutée");
+    } catch(e) {
+      const msgs = {
+        fc_quota:       "Limite Firecrawl atteinte. Colle le texte de la recette.",
+        no_ingredients: "Aucun ingrédient détecté. Colle le texte directement.",
+        tool_error:     "La page n'a pas pu être lue. Colle le texte de la recette.",
+      };
+      setStatus(msgs[e.code] || e.msg || "Erreur lors de la lecture. Colle le texte de la recette.", true);
+      if (e.code !== "unknown") $("#fText").focus();
+    } finally { btn.disabled = false; btn.textContent = "Ajouter la recette"; }
+  }
+
+  // ── Démo ───────────────────────────────────────────────────────────────────
+  function loadDemo(){
+    const mk = (title, servings, list, fav) => ({ id:uid(), title, servings, url:"", fav:!!fav, ingredients:list.map(([name,qty,unit,cat]) => ({name,qty,unit,cat})) });
+    const a = mk("Poulet au curry et lait de coco", 4, [
+      ["blanc de poulet",600,"g","Boucherie et poisson"],["lait de coco",40,"cl","Épicerie"],["oignon",1,"","Fruits et légumes"],
+      ["curry en poudre",2,"c. à soupe","Épicerie"],["riz basmati",300,"g","Épicerie"],["coriandre",1,"","Fruits et légumes"]], true);
+    const b = mk("Gratin dauphinois", 4, [
+      ["pomme de terre",1,"kg","Fruits et légumes"],["crème fraîche",40,"cl","Crèmerie et œufs"],["lait",30,"cl","Crèmerie et œufs"],
+      ["gousse d'ail",2,"","Fruits et légumes"],["noix de muscade",null,"","Épicerie"],["beurre",20,"g","Crèmerie et œufs"]]);
+    const c = mk("Salade de lentilles", 2, [
+      ["lentilles vertes",200,"g","Épicerie"],["carotte",2,"","Fruits et légumes"],["oignon",1,"","Fruits et légumes"],
+      ["oeuf",2,"","Crèmerie et œufs"],["moutarde",1,"c. à café","Épicerie"],["huile d'olive",3,"c. à soupe","Épicerie"]]);
+    state.recipes.push(a, b, c);
+    const P = n => ({ recipeId:n.id, portions:state.people });
+    state.plan["0-soir"] = P(a); state.plan["1-midi"] = P(c); state.plan["2-soir"] = P(b); state.plan["4-soir"] = P(a); state.plan["5-midi"] = P(c);
+    save(); render(); toast("Exemples ajoutés");
+  }
+
+  // ── Copier la liste ────────────────────────────────────────────────────────
+  function listText(){
+    const items = listItems().filter(i => !i.extra);
+    let t = "Courses, semaine du " + dateFR(state.weekStart) + "\n";
+    for (const cat of CATS) {
+      const g = items.filter(i => i.cat === cat && !state.checked[i.key]); if (!g.length) continue;
+      t += "\n" + cat + "\n"; for (const i of g) t += "- " + i.name + " : " + i.need + "\n";
+    }
+    const ex = state.extras.filter(x => !x.done);
+    if (ex.length) { t += "\nEn plus\n"; for (const x of ex) t += "- " + x.name + "\n"; }
+    return t;
+  }
+  async function copyList(){
+    const t = listText(); let ok = false;
+    try { await navigator.clipboard.writeText(t); ok = true; } catch(e) {
+      const ta = document.createElement("textarea"); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { ok = document.execCommand("copy"); } catch(_) {} ta.remove();
+    }
+    toast(ok ? "Liste copiée, prête à coller" : "La copie a été bloquée par le navigateur");
+  }
+
+  let tT;
+  function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(tT); tT = setTimeout(() => t.classList.remove("show"), 2200); }
+
+  // ── Événements ─────────────────────────────────────────────────────────────
+  document.addEventListener("click", e => {
+    const t = e.target.closest("button, a"); if (!t) return;
+    if (t.dataset.act === "add")      { pickSlot = null; return openAdd(); }
+    if (t.dataset.act === "demo")     return loadDemo();
+    if (t.dataset.act === "estimate") return estimate();
+    if (t.dataset.tabGo)  { tab = t.dataset.tabGo; applyTab(); return; }
+    if (t.dataset.slot)   return openPick(t.dataset.slot);
+    if (t.dataset.clear)  { delete state.plan[t.dataset.clear]; save(); return render(); }
+    if (t.dataset.por)    { const p = state.plan[t.dataset.por]; if (p) { p.portions = Math.min(20, Math.max(1, (p.portions || state.people) + Number(t.dataset.d))); save(); render(); } return; }
+    if (t.dataset.pick)   { state.plan[pickSlot] = { recipeId:t.dataset.pick, portions:state.people }; pickSlot = null; save(); render(); $("#dlgPick").close(); return; }
+    if (t.dataset.fav)    { const r = getR(t.dataset.fav); if (r) { r.fav = !r.fav; save(); render(); toast(r.fav ? "Ajoutée aux favoris" : "Retirée des favoris"); } return; }
+    if (t.dataset.filter) { recFilter = t.dataset.filter; return renderRecipes(); }
+    if (t.dataset.place)  return openPlace(t.dataset.place);
+    if (t.dataset.to) {
+      const r = getR(placeRecipe); if (!r) return;
+      state.plan[t.dataset.to] = { recipeId:r.id, portions:state.people };
+      const [d, m] = t.dataset.to.split("-");
+      save(); render(); $("#dlgPlace").close(); toast("« " + r.title + " » prévue " + DAYS[+d].toLowerCase() + " " + m); return;
+    }
+    if (t.dataset.del) {
+      const r = getR(t.dataset.del);
+      if (r && confirm("Supprimer « " + r.title + " » et la retirer du planning ?")) {
+        state.recipes = state.recipes.filter(x => x.id !== r.id);
+        for (const k of Object.keys(state.plan)) if (state.plan[k].recipeId === r.id) delete state.plan[k];
+        save(); render();
+      }
+      return;
+    }
+    if (t.dataset.xdel) { state.extras = state.extras.filter(x => x.id !== t.dataset.xdel); save(); return render(); }
+    if (t.dataset.tab)  { tab = t.dataset.tab; applyTab(); window.scrollTo({ top:0 }); }
+  });
+
+  document.addEventListener("change", e => {
+    const t = e.target;
+    if (t.dataset.chk)  { if (t.checked) state.checked[t.dataset.chk] = true; else delete state.checked[t.dataset.chk]; save(); renderTicket(); }
+    if (t.dataset.xchk) { const x = state.extras.find(x => x.id === t.dataset.xchk); if (x) { x.done = t.checked; save(); renderTicket(); } }
+    if (t.dataset.price !== undefined) {
+      const k = t.dataset.price, v = t.value.trim();
+      const old = state.prices[k] || {};
+      if (v === "") delete state.prices[k];
+      else { const n = Number(v.replace(",",".")); if (isFinite(n) && n >= 0) state.prices[k] = { ...old, price:Math.round(n*100)/100, need:t.dataset.need, manual:true }; }
+      save(); render();
+    }
+    if (t.dataset.pantry !== undefined) {
+      const k = t.dataset.pantry, old = state.prices[k];
+      if (old) { old.pantry = t.checked; old.need = t.dataset.need; old.manual = old.manual || false; }
+      else state.prices[k] = { price:0, pack:"", pantry:t.checked, need:t.dataset.need, manual:true };
+      save(); render();
+    }
+  });
+
+  document.addEventListener("submit", e => {
+    if (e.target.id === "extraForm") {
+      e.preventDefault();
+      const v = $("#extraIn").value.trim();
+      if (v) { state.extras.push({ id:uid(), name:v, done:false }); save(); render(); $("#extraIn").focus(); }
+    }
+  });
+
+  $("#budIn").addEventListener("change", e => { const n = Number(String(e.target.value).replace(",",".")); state.budget = isFinite(n) && n >= 0 ? n : 0; save(); render(); });
+  $("#estimate").onclick  = estimate;
+  $("#addRecipeTop").onclick = () => { pickSlot = null; openAdd(); };
+  $("#pickNew").onclick   = openAdd;
+  $("#analyze").onclick   = analyze;
+  $("#fUrl").addEventListener("input", syncOpen);
+  $("#pplMinus").onclick  = () => { state.people = Math.max(1, state.people - 1); save(); render(); };
+  $("#pplPlus").onclick   = () => { state.people = Math.min(20, state.people + 1); save(); render(); };
+  $("#copyList").onclick  = copyList;
+  $("#uncheck").onclick   = () => { state.checked = {}; state.extras.forEach(x => x.done = false); save(); renderTicket(); };
+  $("#newWeek").onclick   = () => {
+    if (Object.keys(state.plan).length && !confirm("Passer à une nouvelle semaine ? Les repas de cette semaine sont rangés dans « Ce qu'on a mangé ».")) return;
+    archiveWeek();
+    state.plan = {}; state.checked = {}; state.extras = [];
+    state.weekStart = mondayOf(new Date()).toISOString();
+    save(); render(); toast("Nouvelle semaine prête");
+  };
+
+  wideMQ.addEventListener("change", () => { renderWeek(); applyTab(); });
+
+  // ── Login screen ──────────────────────────────────────────────────────────
+  $("#codeSubmit").onclick = () => login($("#codeInput").value.trim());
+  $("#codeInput").addEventListener("keydown", e => { if (e.key === "Enter") login(e.target.value.trim()); });
+
+  // Auto-login si un code est déjà sauvegardé
+  if (householdCode) {
+    login(householdCode);
+  } else {
+    setTimeout(() => $("#codeInput").focus(), 100);
+  }
+})();
+</script>
+</body>
+</html>
