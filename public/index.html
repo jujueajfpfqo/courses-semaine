@@ -546,7 +546,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
   const KEY       = "repas-semaine-v1";
   const KEY_CODE  = "repas-code-v1";
   const DAYS      = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
-  const MEALS     = [{id:"collation",label:"Collation"},{id:"soir",label:"Soir"}];
+  const MEALS     = [{id:"collation",label:"Collation"},{id:"entree",label:"Entrée"},{id:"plat",label:"Plat"}];
   const CATS      = ["Fruits et légumes","Boucherie et poisson","Crèmerie et œufs","Boulangerie","Épicerie","Surgelés","Boissons","Hygiène et maison","Autres"];
   const UNITS     = ["g","kg","ml","cl","l","c. à soupe","c. à café","pincée",""];
   const STAR      = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6-4.5-4.2 6.1-.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
@@ -672,6 +672,8 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
   // ── État ───────────────────────────────────────────────────────────────────
   let state = { people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] };
   try { const saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && typeof saved === "object") state = Object.assign(state, saved); } catch(e) {}
+  // Migration : anciens repas "soir"/"midi" → "plat"/"entree"
+  for (const k of Object.keys(state.plan)) { if (k.endsWith("-soir")) { state.plan[k.replace("-soir","-plat")] = state.plan[k]; delete state.plan[k]; } else if (k.endsWith("-midi")) { state.plan[k.replace("-midi","-entree")] = state.plan[k]; delete state.plan[k]; } }
   state.prices  = state.prices  || {};
   state.history = state.history || [];
   if (state.budget == null) state.budget = 80;
@@ -861,7 +863,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
         <h3 id="rtitle-${r.id}">${esc(r.title)}<button class="edit-title" type="button" data-rename="${r.id}" aria-label="Renommer la recette" title="Renommer">✎</button></h3>
         <div class="sub"><span>Pour ${r.servings} pers.</span><span>${r.ingredients.length} ingrédients</span>${host ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(host)}</a>` : ""}</div>
         ${s ? `<div class="made">Faite <b>${s.count} fois</b>, la dernière le ${dateFR(s.last,{weekday:"long",day:"numeric",month:"long"})}</div>` : ""}
-        <details><summary>Ingrédients</summary><ul>${r.ingredients.map(i => { const b = base(i.qty,i.unit); return `<li><span>${esc(i.name)}</span><span>${esc(fmt(b.q, b.u))}</span></li>`; }).join("")}</ul></details>
+        <details><summary>Ingrédients <small style="font-weight:400;color:var(--muted)">pour ${state.people} pers.</small></summary><ul>${r.ingredients.map(i => { const scale = r.servings > 0 ? state.people / r.servings : 1; const b = base(i.qty != null ? Math.round(i.qty * scale * 100) / 100 : null, i.unit); return `<li><span>${esc(i.name)}</span><span>${esc(fmt(b.q, b.u))}</span></li>`; }).join("")}</ul></details>
         <div class="actions"><button class="btn small" type="button" data-place="${r.id}">Ajouter au planning</button><button class="linkbtn" type="button" data-del="${r.id}">Supprimer</button></div>
       </article>`;
     }
@@ -952,9 +954,9 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     const cats = CATS.map((k, i) => ({ label:k, v:c.byCat[k] || 0, color:`var(--k${i})` })).filter(x => x.v > 0).sort((a, b) => b.v - a.v);
     h += `<div class="card c-6"><h3>Par rayon</h3><div class="donut-wrap">${donut(cats, c.total)}<ul class="legend">${cats.map(x => `<li><i style="background:${x.color}"></i><span>${esc(x.label)}</span><b>${eur(x.v)}</b></li>`).join("")}</ul></div></div>`;
 
-    const days = DAYS.map((d, i) => ({ d:d.slice(0,3), midi:c.bySlot[i+"-midi"] || 0, soir:c.bySlot[i+"-soir"] || 0 }));
-    const maxD = Math.max(1, ...days.map(x => x.midi + x.soir));
-    h += `<div class="card c-6"><h3>Par jour</h3><div class="cols">${days.map(x => { const t = x.midi + x.soir; return `<div class="col"><span class="v">${t ? eur(t).replace(/,\d\d/, "") : ""}</span><div class="stack" style="height:${Math.max(4, t/maxD*100)}%">${t ? `<i style="height:${x.midi/t*100}%;background:var(--plum)"></i><i style="height:${x.soir/t*100}%;background:var(--citron)"></i>` : ""}</div><span class="d">${x.d}</span></div>`; }).join("")}</div><div class="keys"><span><i style="background:var(--plum)"></i>Midi</span><span><i style="background:var(--citron)"></i>Soir</span></div></div>`;
+    const days = DAYS.map((d, i) => ({ d:d.slice(0,3), col:c.bySlot[i+"-collation"] || 0, ent:c.bySlot[i+"-entree"] || 0, plat:c.bySlot[i+"-plat"] || 0 }));
+    const maxD = Math.max(1, ...days.map(x => x.col + x.ent + x.plat));
+    h += `<div class="card c-6"><h3>Par jour</h3><div class="cols">${days.map(x => { const t = x.col + x.ent + x.plat; return `<div class="col"><span class="v">${t ? eur(t).replace(/,\d\d/, "") : ""}</span><div class="stack" style="height:${Math.max(4, t/maxD*100)}%">${t ? `<i style="height:${x.col/t*100}%;background:var(--k0)"></i><i style="height:${x.ent/t*100}%;background:var(--plum)"></i><i style="height:${x.plat/t*100}%;background:var(--citron)"></i>` : ""}</div><span class="d">${x.d}</span></div>`; }).join("")}</div><div class="keys"><span><i style="background:var(--k0)"></i>Collation</span><span><i style="background:var(--plum)"></i>Entrée</span><span><i style="background:var(--citron)"></i>Plat</span></div></div>`;
 
     const byRec = {};
     for (const k of mealsKeys) { const r = getR(state.plan[k].recipeId); const e = byRec[r.id] || (byRec[r.id] = { t:r.title, v:0, n:0 }); e.v += c.bySlot[k] || 0; e.n++; }
@@ -1138,7 +1140,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       ["oeuf",2,"","Crèmerie et œufs"],["moutarde",1,"c. à café","Épicerie"],["huile d'olive",3,"c. à soupe","Épicerie"]]);
     state.recipes.push(a, b, c);
     const P = n => ({ recipeId:n.id, portions:state.people });
-    state.plan["0-soir"] = P(a); state.plan["1-midi"] = P(c); state.plan["2-soir"] = P(b); state.plan["4-soir"] = P(a); state.plan["5-midi"] = P(c);
+    state.plan["0-plat"] = P(a); state.plan["1-entree"] = P(c); state.plan["2-plat"] = P(b); state.plan["4-plat"] = P(a); state.plan["5-entree"] = P(c);
     save(); render(); toast("Exemples ajoutés");
   }
 
