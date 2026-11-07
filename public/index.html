@@ -449,7 +449,18 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
           </label>
           <div class="row" style="flex-wrap:wrap">
             <span class="bud-status" id="budStatus" role="status"></span>
-            <button class="btn" type="button" id="estimate">Estimer les prix U</button>
+            <label class="bud-input" style="padding:4px 4px 4px 14px">
+              Enseigne
+              <select id="storeSelect" style="border:0;background:var(--surface-2);border-radius:999px;padding:6px 10px;font-weight:600;cursor:pointer">
+                <option value="u">Magasins U</option>
+                <option value="leclerc">E.Leclerc</option>
+                <option value="auchan">Auchan</option>
+                <option value="intermarche">Intermarché</option>
+                <option value="lidl">Lidl</option>
+                <option value="picnic">Picnic</option>
+              </select>
+            </label>
+            <button class="btn" type="button" id="estimate">Estimer les prix</button>
           </div>
         </div>
         <p class="bud-note">Prix estimés d'après les tarifs habituels des Magasins U (Super U, Hyper U, U Express), en marque U quand elle existe. Ils varient selon le magasin et les promos : corrige un prix dans le tableau si ton ticket est différent.</p>
@@ -913,7 +924,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     if (!busyEstimate) { st.className = "bud-status"; st.textContent = c.unpriced ? `${c.unpriced} article${c.unpriced > 1 ? "s" : ""} sans prix` : (c.items.length ? "Tous les prix sont à jour" : ""); }
     const dash = $("#dash");
     if (!c.items.length) { dash.innerHTML = `<div class="empty"><p><strong>Rien à chiffrer pour l'instant.</strong>Place des recettes dans le planning, puis lance l'estimation des prix.</p><button class="btn" type="button" data-tab-go="planning">Aller au planning</button></div>`; return; }
-    if (c.unpriced === c.items.length) { dash.innerHTML = `<div class="empty"><p><strong>${c.items.length} articles à chiffrer.</strong>Lance l'estimation pour voir le coût de la semaine, repas par repas.</p><button class="btn" type="button" data-act="estimate">Estimer les prix U</button></div>` + historyCard(c) + tableCard(c); return; }
+    if (c.unpriced === c.items.length) { dash.innerHTML = `<div class="empty"><p><strong>${c.items.length} articles à chiffrer.</strong>Lance l'estimation pour voir le coût de la semaine, repas par repas.</p><button class="btn" type="button" data-act="estimate">Estimer les prix</button></div>` + historyCard(c) + tableCard(c); return; }
 
     const budget = Number(state.budget) || 0;
     const rest   = budget - c.total;
@@ -993,10 +1004,11 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     btns.forEach(b => { b.disabled = true; b.textContent = "Estimation…"; });
     st.className = "bud-status"; st.textContent = `Estimation de ${todo.length} article${todo.length > 1 ? "s" : ""}…`;
     try {
+      const store = $("#storeSelect")?.value || "u";
       const res = await fetch("/api/prices", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: todo.map(it => ({ key:it.key, name:it.name, need:it.need, qty:it.q, unit:it.u })) })
+        body: JSON.stringify({ store, items: todo.map(it => ({ key:it.key, name:it.name, need:it.need, qty:it.q, unit:it.u })) })
       });
       if (!res.ok) throw new Error("Erreur serveur");
       const { prices } = await res.json();

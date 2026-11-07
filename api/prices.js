@@ -5,7 +5,7 @@
 
 'use strict';
 
-const { findIngredient } = require('../lib/ingredients');
+const { findIngredient, STORES } = require('../lib/ingredients');
 
 // Conversion en unité de base (g, ml, pièce)
 function toBase(qty, unit) {
@@ -17,8 +17,8 @@ function toBase(qty, unit) {
   return { q: qty, u };
 }
 
-function estimatePrice(name, qty, unit) {
-  const data = findIngredient(name);
+function estimatePrice(name, qty, unit, store) {
+  const data = findIngredient(name, store);
   if (!data) return null;
 
   // Convertir la quantité nécessaire en unité de base
@@ -56,13 +56,14 @@ module.exports = async function handler(req, res) {
   }
 
   const items = Array.isArray(body?.items) ? body.items : [];
+  const store = typeof body?.store === "string" ? body.store : "u";
   const prices = [];
 
   for (const item of items) {
     const { key, name, need, qty, unit } = item || {};
     if (!key || !name) continue;
 
-    const est = estimatePrice(String(name).toLowerCase(), qty, unit || "");
+    const est = estimatePrice(String(name).toLowerCase(), qty, unit || "", store);
     if (est) {
       prices.push({ key, price: est.price, pack: est.pack, pantry: est.pantry, need: need || "" });
     } else {
