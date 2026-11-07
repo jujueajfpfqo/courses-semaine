@@ -129,6 +129,9 @@ button.slot .plus{display:block;font-size:1.5rem;line-height:1;font-weight:400}
 .star{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:transparent;display:grid;place-items:center;color:var(--muted)}
 .star:hover{background:var(--surface-2)}
 .star svg{width:22px;height:22px}
+.edit-title{border:0;background:none;color:var(--muted);font-size:.85rem;padding:0 0 0 6px;cursor:pointer;opacity:0;transition:opacity .15s;vertical-align:middle}
+.rcard:hover .edit-title{opacity:1}
+.edit-title:hover{color:var(--plum)}
 .star[aria-pressed="true"]{color:#C99A06}
 .star[aria-pressed="true"] svg path{fill:var(--citron);stroke:#B08604}
 .linkbtn{border:0;background:none;padding:4px 0;color:var(--muted);font-size:.9rem;text-decoration:underline;text-underline-offset:2px}
@@ -849,7 +852,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       let host = ""; try { if (r.url) host = new URL(r.url).hostname.replace(/^www\./, ""); } catch(e) {}
       h += `<article class="rcard">
         <button class="star" type="button" data-fav="${r.id}" aria-pressed="${!!r.fav}" aria-label="${r.fav ? "Retirer des favoris" : "Mettre en favori"}">${STAR}</button>
-        <h3>${esc(r.title)}</h3>
+        <h3 id="rtitle-${r.id}">${esc(r.title)}<button class="edit-title" type="button" data-rename="${r.id}" aria-label="Renommer la recette" title="Renommer">✎</button></h3>
         <div class="sub"><span>Pour ${r.servings} pers.</span><span>${r.ingredients.length} ingrédients</span>${host ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(host)}</a>` : ""}</div>
         ${s ? `<div class="made">Faite <b>${s.count} fois</b>, la dernière le ${dateFR(s.last,{weekday:"long",day:"numeric",month:"long"})}</div>` : ""}
         <details><summary>Ingrédients</summary><ul>${r.ingredients.map(i => { const b = base(i.qty,i.unit); return `<li><span>${esc(i.name)}</span><span>${esc(fmt(b.q, b.u))}</span></li>`; }).join("")}</ul></details>
@@ -1177,6 +1180,21 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       state.plan[t.dataset.to] = { recipeId:r.id, portions:state.people };
       const [d, m] = t.dataset.to.split("-");
       save(); render(); $("#dlgPlace").close(); toast("« " + r.title + " » prévue " + DAYS[+d].toLowerCase() + " " + m); return;
+    }
+    if (t.dataset.rename) {
+      const r = getR(t.dataset.rename); if (!r) return;
+      const h3 = document.getElementById("rtitle-" + r.id); if (!h3) return;
+      const inp = document.createElement("input");
+      inp.value = r.title; inp.style.cssText = "font:inherit;font-weight:700;font-size:1.15rem;width:100%;border:0;border-bottom:2px solid var(--plum);background:transparent;padding:0;outline:none";
+      h3.innerHTML = ""; h3.appendChild(inp); inp.focus(); inp.select();
+      const done = () => {
+        const v = inp.value.trim().slice(0, 80);
+        if (v && v !== r.title) { r.title = v; save(); }
+        renderRecipes();
+      };
+      inp.addEventListener("blur", done);
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); inp.blur(); } if (e.key === "Escape") { inp.removeEventListener("blur", done); renderRecipes(); } });
+      return;
     }
     if (t.dataset.del) {
       const r = getR(t.dataset.del);
