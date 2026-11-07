@@ -92,10 +92,12 @@ function servingsFromText(text) {
 
 function cleanTitle(raw) {
   if (!raw) return "Recette sans nom";
-  // Garder uniquement ce qui précède le premier séparateur de type " : ", " | ", " - ", " – "
-  const t = String(raw).trim();
-  const sep = t.search(/\s+[:\|\-–]\s+/);
-  return (sep > 0 ? t.slice(0, sep) : t).trim().slice(0, 80) || "Recette sans nom";
+  let t = String(raw).trim();
+  // Couper aux séparateurs courants des sites de recettes
+  t = t.split(/\s+[:\|–\-]\s+/)[0];
+  // Couper aux mots parasites typiques des titres SEO
+  t = t.replace(/\s+(recette|la recette|une recette|le meilleur|la meilleure|meilleur|facile|maison|traditionnel|traditionnelle|rapide|inratable).*/i, "");
+  return t.trim().slice(0, 80) || "Recette sans nom";
 }
 
 // ── Firecrawl ────────────────────────────────────────────────────────────────
