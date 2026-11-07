@@ -315,6 +315,12 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
   .tabs .count{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Décorations de fond */
+.deco{position:fixed;pointer-events:none;z-index:0;opacity:.07}
+.deco svg{display:block}
+#app{position:relative;z-index:1}
+.login-screen{z-index:200}
 </style>
 </head>
 <body>
@@ -332,6 +338,52 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     <button class="btn" id="codeSubmit" type="button">Accéder au planning</button>
     <p id="loginStatus" class="hint" style="color:var(--danger);display:none"></p>
   </div>
+</div>
+
+<!-- Décorations de fond -->
+<div class="deco" style="top:-40px;right:-60px;transform:rotate(18deg)">
+  <svg width="220" height="220" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Carotte -->
+    <path d="M50 80 C44 68 38 52 42 36 C44 28 52 24 56 30 C62 40 60 60 50 80Z" fill="var(--plum)"/>
+    <path d="M42 36 C38 28 32 20 28 16" stroke="var(--plum)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M50 32 C46 24 44 16 46 10" stroke="var(--plum)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M56 34 C60 26 66 20 70 16" stroke="var(--plum)" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+</div>
+<div class="deco" style="top:30vh;left:-50px;transform:rotate(-12deg)">
+  <svg width="180" height="180" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Fourchette -->
+    <rect x="47" y="40" width="6" height="45" rx="3" fill="var(--plum)"/>
+    <path d="M36 15 L36 38 Q50 46 64 38 L64 15" stroke="var(--plum)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <line x1="50" y1="15" x2="50" y2="38" stroke="var(--plum)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="40" y1="15" x2="40" y2="36" stroke="var(--plum)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="60" y1="15" x2="60" y2="36" stroke="var(--plum)" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+</div>
+<div class="deco" style="bottom:15vh;right:-30px;transform:rotate(8deg)">
+  <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Tomate -->
+    <circle cx="50" cy="58" r="30" fill="var(--plum)"/>
+    <path d="M50 28 C50 20 44 14 38 16" stroke="var(--plum)" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M50 28 C50 18 56 12 62 14" stroke="var(--plum)" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M50 28 C46 20 42 18 38 20" stroke="var(--plum)" stroke-width="3" stroke-linecap="round" fill="none"/>
+  </svg>
+</div>
+<div class="deco" style="bottom:5vh;left:5vw;transform:rotate(-20deg)">
+  <svg width="160" height="160" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Feuille / herbe -->
+    <path d="M50 85 C50 85 20 60 22 35 C24 15 50 10 50 10 C50 10 76 15 78 35 C80 60 50 85 50 85Z" fill="var(--plum)"/>
+    <line x1="50" y1="85" x2="50" y2="15" stroke="var(--bg)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M50 60 C40 50 30 48 25 50" stroke="var(--bg)" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M50 45 C60 35 70 33 75 35" stroke="var(--bg)" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </svg>
+</div>
+<div class="deco" style="top:55vh;right:2vw;transform:rotate(5deg)">
+  <svg width="150" height="150" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Cuillère -->
+    <ellipse cx="50" cy="28" rx="16" ry="20" fill="var(--plum)"/>
+    <rect x="47" y="46" width="6" height="40" rx="3" fill="var(--plum)"/>
+  </svg>
 </div>
 
 <div class="wrap" id="app" hidden>
