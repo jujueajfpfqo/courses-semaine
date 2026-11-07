@@ -581,10 +581,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       if (!res.ok) return false;
       const { data, updated_at } = await res.json();
       if (data && typeof data === "object") {
-        state = Object.assign({ people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] }, data);
-        state.prices   = state.prices   || {};
-        state.history  = state.history  || [];
-        if (state.budget == null) state.budget = 80;
+        state = migrateState(Object.assign({ people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] }, data));
         lastSyncTs = updated_at || "";
         try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
         return true;
@@ -613,11 +610,8 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
         if (!res.ok) return;
         const { data, updated_at } = await res.json();
         if (data && updated_at && updated_at !== lastSyncTs) {
-          const remote = Object.assign({ people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] }, data);
           // Fusionner : on garde le serveur (dernière écriture gagne)
-          state = remote;
-          state.prices  = state.prices  || {};
-          state.history = state.history || {};
+          state = migrateState(Object.assign({ people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] }, data));
           lastSyncTs = updated_at;
           try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
           render();
@@ -670,13 +664,20 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
   }
 
   // ── État ───────────────────────────────────────────────────────────────────
+  function migrateState(s) {
+    for (const k of Object.keys(s.plan || {})) {
+      if (k.endsWith("-soir"))  { s.plan[k.replace("-soir","-plat")]   = s.plan[k]; delete s.plan[k]; }
+      else if (k.endsWith("-midi")) { s.plan[k.replace("-midi","-entree")] = s.plan[k]; delete s.plan[k]; }
+    }
+    s.prices  = s.prices  || {};
+    s.history = s.history || [];
+    if (s.budget == null) s.budget = 80;
+    return s;
+  }
+
   let state = { people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] };
   try { const saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && typeof saved === "object") state = Object.assign(state, saved); } catch(e) {}
-  // Migration : anciens repas "soir"/"midi" → "plat"/"entree"
-  for (const k of Object.keys(state.plan)) { if (k.endsWith("-soir")) { state.plan[k.replace("-soir","-plat")] = state.plan[k]; delete state.plan[k]; } else if (k.endsWith("-midi")) { state.plan[k.replace("-midi","-entree")] = state.plan[k]; delete state.plan[k]; } }
-  state.prices  = state.prices  || {};
-  state.history = state.history || [];
-  if (state.budget == null) state.budget = 80;
+  migrateState(state);
 
   function saveLocal() {
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
