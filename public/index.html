@@ -497,7 +497,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
         <label for="fUrl">Lien de la recette</label>
         <div class="row">
           <input id="fUrl" type="url" placeholder="https://www.marmiton.org/recettes/…" autocomplete="off">
-          <a class="btn ghost small" id="openUrl" href="#" target="_blank" rel="noopener" aria-disabled="true">Ajouter</a>
+          <button class="btn small" type="button" id="openUrl">Ajouter</button>
         </div>
         <span class="help">La page est lue directement (schema.org) ou via Firecrawl si besoin. Le lien reste enregistré.</span>
       </div>
@@ -509,7 +509,6 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       <div class="status" id="addStatus" role="status"></div>
       <div class="dlg-foot">
         <button class="btn ghost" value="cancel">Annuler</button>
-        <button class="btn" type="button" id="analyze">Ajouter la recette</button>
       </div>
     </div>
   </form>
@@ -1086,11 +1085,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
     setTimeout(() => $("#fUrl").focus(), 30);
   }
   function setStatus(msg, err){ const s = $("#addStatus"); s.textContent = msg; s.className = "status" + (msg ? " show" : "") + (err ? " err" : ""); }
-  function syncOpen(){
-    const v = $("#fUrl").value.trim(), a = $("#openUrl");
-    let ok = false; try { ok = /^https?:$/.test(new URL(v).protocol); } catch(e) {}
-    a.href = ok ? v : "#"; a.setAttribute("aria-disabled", ok ? "false" : "true"); a.style.opacity = ok ? "1" : ".45"; a.style.pointerEvents = ok ? "auto" : "none";
-  }
+  function syncOpen(){}
 
   // ── Ajout de recette ───────────────────────────────────────────────────────
   async function analyze(){
@@ -1102,7 +1097,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       setStatus(url ? "Ce lien n'est pas valide. Il doit commencer par https://" : "Colle le lien ou le texte de la recette.", true);
       if (!text) $("#fUrl").focus(); return;
     }
-    const btn = $("#analyze"); btn.disabled = true; btn.textContent = "Récupération…";
+    const btn = $("#openUrl"); btn.disabled = true; btn.textContent = "Récupération…";
     try {
       setStatus(validUrl ? "Lecture de la page…" : "Analyse de la recette…");
       const res = await fetch("/api/import", {
@@ -1135,7 +1130,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       };
       setStatus(msgs[e.code] || e.msg || "Erreur lors de la lecture. Colle le texte de la recette.", true);
       if (e.code !== "unknown") $("#fText").focus();
-    } finally { btn.disabled = false; btn.textContent = "Ajouter la recette"; }
+    } finally { btn.disabled = false; btn.textContent = "Ajouter"; }
   }
 
   // ── Démo ───────────────────────────────────────────────────────────────────
@@ -1261,7 +1256,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
   $("#logoutBtn").onclick = logout;
   $("#addRecipeTop").onclick = () => { pickSlot = null; openAdd(); };
   $("#pickNew").onclick   = openAdd;
-  $("#analyze").onclick   = analyze;
+  $("#openUrl").onclick   = analyze;
   $("#fUrl").addEventListener("input", syncOpen);
   $("#pplMinus").onclick  = () => { state.people = Math.max(1, state.people - 1); save(); render(); };
   $("#pplPlus").onclick   = () => { state.people = Math.min(20, state.people + 1); save(); render(); };
