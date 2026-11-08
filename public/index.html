@@ -410,6 +410,7 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
       </div>
       <button class="btn ghost" type="button" id="newWeek">Nouvelle semaine</button>
       <button class="btn" type="button" id="addRecipeTop">Ajouter une recette</button>
+      <span id="syncStatus" style="font-size:.78rem;color:var(--muted);display:none"></span>
       <button class="btn ghost" type="button" id="logoutBtn" style="font-size:.88rem;padding:8px 14px">↩ Changer de foyer</button>
     </div>
   </header>
@@ -584,21 +585,31 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
         state = migrateState(Object.assign({ people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] }, data));
         lastSyncTs = updated_at || "";
         try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+        setSyncStatus("✓ Données chargées", true);
         return true;
       }
-    } catch(e) {}
+      setSyncStatus("✓ Nouveau foyer", true);
+    } catch(e) { setSyncStatus("⚠ Impossible de joindre le serveur", false); }
     return false;
+  }
+
+  function setSyncStatus(msg, ok) {
+    const el = $("#syncStatus"); if (!el) return;
+    el.textContent = msg; el.style.display = msg ? "" : "none";
+    el.style.color = ok ? "var(--good, #2F7A4B)" : "var(--danger, #A3352B)";
   }
 
   async function pushToServer() {
     if (!codeHash) return;
     try {
-      await fetch("/api/sync", {
+      const res = await fetch("/api/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: codeHash, data: state }),
       });
-    } catch(e) {}
+      if (res.ok) setSyncStatus("✓ Synchronisé", true);
+      else { const d = await res.json().catch(()=>{}); setSyncStatus("⚠ Sync échoué : " + (d?.error || res.status), false); }
+    } catch(e) { setSyncStatus("⚠ Hors ligne", false); }
   }
 
   function startPolling() {
