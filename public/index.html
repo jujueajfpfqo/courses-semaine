@@ -271,12 +271,13 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
 .pick-list button:hover{border-color:var(--plum)}
 .pick-list button span{color:var(--muted);font-weight:400;font-size:.88rem;white-space:nowrap}
 .pick-list .fav::before{content:"★ ";color:#C99A06}
-.place-grid{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:stretch;max-height:58vh;overflow:auto}
-.place-grid .d{font-weight:650;align-self:center;padding-right:6px}
-.place-grid button{border:1.5px dashed var(--line);background:transparent;border-radius:12px;padding:9px 10px;text-align:left;font-size:.88rem;min-height:48px;color:var(--muted);font-weight:600}
+.place-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:8px;align-items:stretch;max-height:58vh;overflow:auto}
+.place-grid .d{font-weight:650;align-self:center;padding-right:6px;white-space:nowrap}
+.place-grid button{border:1.5px dashed var(--line);background:transparent;border-radius:12px;padding:9px 10px;text-align:left;font-size:.88rem;min-height:48px;color:var(--muted);font-weight:600;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
 .place-grid button.busy{border-style:solid;background:var(--surface-2);color:var(--ink);font-weight:500}
 .place-grid button:hover{border-color:var(--plum);color:var(--plum)}
 .place-grid button small{display:block;font-size:.75rem;color:var(--muted);font-weight:600}
+@media(max-width:600px){.place-grid{grid-template-columns:1fr 1fr 1fr}.place-grid .d{grid-column:1/-1;padding:6px 0 2px;border-top:1px solid var(--line);margin-top:4px}}
 .close-x{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface-2);font-size:1.2rem}
 .dlg-wrap{position:relative}
 
