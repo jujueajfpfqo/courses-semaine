@@ -665,12 +665,14 @@ dialog::backdrop{background:rgba(25,18,24,.45);backdrop-filter:blur(3px)}
 
   function logout() {
     localStorage.removeItem(KEY_CODE);
+    localStorage.removeItem(KEY);
+    state = { people:2, recipes:[], plan:{}, checked:{}, extras:[], weekStart:mondayOf(new Date()).toISOString(), budget:80, prices:{}, history:[] };
     householdCode = ""; codeHash = "";
     if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
     clearTimeout(syncTimer);
     $("#app").hidden = true;
     $("#loginScreen").hidden = false;
-    const inp = $("#codeIn"); if (inp) { inp.value = ""; inp.focus(); }
+    const inp = $("#codeInput"); if (inp) { inp.value = ""; inp.focus(); }
   }
 
   // ── État ───────────────────────────────────────────────────────────────────
